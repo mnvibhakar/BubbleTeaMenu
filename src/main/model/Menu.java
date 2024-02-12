@@ -30,7 +30,7 @@ public class Menu {
     //          returns null if a drink with that name is not on the menu
     public Drink findDrink(String name) {
         for (Drink drink : drinks) {
-            if (drink.name == name) {
+            if (drink.name.equals(name)) {
                 return drink;
             }
         }
@@ -42,10 +42,13 @@ public class Menu {
     public void setSpecials(String special1, String special2) {
         for (Drink drink : drinks) {
             drink.setSpecial(false);
-            if ((drink.getName() == special1) || (drink.getName() == special2)) {
+            if (drink.getName().equals(special1) || drink.getName().equals(special2)) {
                 drink.setSpecial(true);
             }
         }
     }
 
+    public ArrayList<Drink> getDrinksOrdered() {
+        return drinks;
+    }
 }

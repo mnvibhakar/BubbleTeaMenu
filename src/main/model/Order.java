@@ -4,11 +4,14 @@ import java.util.ArrayList;
 
 public class Order {
 
-    private double totalPrice = 0;           // The total of price of all drinks in the order
-    private ArrayList<Drink> drinksOrdered;  // A list of all drinks in the order
+    private static final double TAX_RATE = 0.08; //The sales tax rate applied to final orders
+    private double totalPrice;               // The total of price of all drinks in the order
+    private ArrayList<Drink> drinksOrdered;      // A list of all drinks in the order
 
     // Effects: Creates new order
     public Order() {
+        this.totalPrice = 0;
+        drinksOrdered = new ArrayList<Drink>();
     }
 
     // Effects: adds the given drink to list of drinks ordered and adds its price to the order price
@@ -22,10 +25,10 @@ public class Order {
     //          updates the amount of ingredients based on the given specifications
     //          adds the drink to the order
     // Modifies: This, the given drink
-    public void orderDrink(char size, ArrayList<String> exTop, double ice, double sugar, Drink drink) {
+    public void orderDrink(String size, ArrayList<String> exTop, double ice, double sugar, Drink drink) {
         drink.updateDrink(size, exTop, ice, sugar);
         drink.updateIngredients();
-        this.addDrink(drink);
+        addDrink(drink);
     }
 
 
@@ -35,5 +38,17 @@ public class Order {
 
     public double getTotalPrice() {
         return this.totalPrice;
+    }
+
+    public void applyTax() {
+        totalPrice += TAX_RATE * totalPrice;
+    }
+
+    public int getIngredientAmount(String name) {
+        int ingredientAmount = 0;
+        for (Drink drink : drinksOrdered) {
+            ingredientAmount += drink.getIngredientAmount(name);
+        }
+        return ingredientAmount;
     }
 }

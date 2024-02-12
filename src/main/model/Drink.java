@@ -2,6 +2,7 @@ package model;
 
 import model.Ingredient;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public abstract class Drink {
@@ -29,14 +30,18 @@ public abstract class Drink {
     // Requires: 0 <= exTop <= 2
     // Effects: Applies the given specifications to the drink
     //          updates the price of the drink based on the given specifications
-    public void updateDrink(char size, ArrayList exTop, double ice, double sugar) {
-        if ('l' == size) {
+    public void updateDrink(String size, ArrayList<String> exTop, double ice, double sugar) {
+        if ("l" == size) {
             this.size = 'l';
             this.price += 0.5;
         }
         if (true == this.isSpecial) {
             this.price *= 0.8;
         }
+        this.price += 0.5 * exTop.size();
+        this.ice = ice;
+        this.sugar = sugar;
+        toppings.addAll(exTop);
     }
 
     public void setSpecial(boolean status) {
@@ -65,6 +70,16 @@ public abstract class Drink {
 
     public double getSugar() {
         return this.sugar;
+    }
+
+    public int getIngredientAmount(String n) {
+        int amount = 0;
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient.getName().equals(n)) {
+                amount += ingredient.getAmount();
+            }
+        }
+        return amount;
     }
 }
 
