@@ -3,8 +3,9 @@ package model;
 import model.Ingredient;
 import java.util.ArrayList;
 
-
-
+/*
+Represents the base attributes of a drink, including name, ingredients, price, toppings, size, sugar, and ice
+ */
 public abstract class Drink {
 
     protected String name;                         // Name of the drink
@@ -16,8 +17,6 @@ public abstract class Drink {
     protected double ice;                          // amount of ice in the drink
     protected boolean isSpecial;                   // details if the drink is on special or not
 
-
-    // Requires: n longer than 0 characters, price >= 0
     // Effects: Creates a drink with the specified characteristics
     //          Discounts drink by 20% if it's on special
     public Drink() {

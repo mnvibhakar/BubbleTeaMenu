@@ -2,6 +2,9 @@ package model;
 
 import java.util.ArrayList;
 
+/*
+Represents an order, with a list of drinks that have been ordered, and records the total price
+ */
 public class Order {
 
     private static final double TAX_RATE = 0.08; //The sales tax rate applied to final orders

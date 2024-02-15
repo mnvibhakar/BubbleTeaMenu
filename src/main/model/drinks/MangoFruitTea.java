@@ -5,6 +5,9 @@ import model.Ingredient;
 
 import java.util.Collections;
 
+/*
+Represents a mango fruit tea, lists the ingredients used in the drink
+ */
 public class MangoFruitTea extends Drink {
 
     private Ingredient ingredient1 = new Ingredient("green tea", 300);  //Amount of green tea, ml

@@ -1,5 +1,8 @@
 package model;
 
+/*
+Represents an ingredient, with a name and an amount
+ */
 public class Ingredient {
 
     private String name;  // Name of the ingredient

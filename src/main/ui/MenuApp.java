@@ -7,9 +7,15 @@ import model.Order;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/*
+Represents the menu app, processes user input to execute the chosen tasks, including:
+    -ordering drinks
+    -changing specials
+    -viewing stats about price and ingredients
+ */
 public class MenuApp {
 
-    private Menu menu;
+    private final Menu menu = new Menu("", "");
     private ArrayList<Order> orderLog;
     private final int managerPasscode = 1234;
     private Scanner input;
@@ -23,7 +29,7 @@ public class MenuApp {
     //Effects: Runs the app
     private void runMenu() {
         boolean keepGoing = true;
-        String command = null;
+        String command;
 
         init();
 

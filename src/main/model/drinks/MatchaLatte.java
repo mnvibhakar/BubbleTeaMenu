@@ -3,6 +3,9 @@ package model.drinks;
 import model.Drink;
 import model.Ingredient;
 
+/*
+Represents a matcha latte, lists the ingredients used in the drink
+ */
 public class MatchaLatte extends Drink {
 
     private Ingredient ingredient1 = new Ingredient("matcha", 400); //ingredient for matcha latte

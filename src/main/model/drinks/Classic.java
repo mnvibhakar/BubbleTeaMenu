@@ -3,7 +3,9 @@ package model.drinks;
 import model.Drink;
 import model.Ingredient;
 
-
+/*
+Represents a Classic milk tea, lists the ingredient used in classic milk tea
+ */
 public class Classic extends Drink {
 
     private Ingredient ingredient1 = new Ingredient("classic", 300); //ingredient for classic milk tea

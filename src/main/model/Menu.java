@@ -8,6 +8,9 @@ import model.drinks.MatchaLatte;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/*
+Represents the menu, with a list of all current drinks
+ */
 public class Menu {
 
     private ArrayList<Drink> drinks; //List of drinks on the menu

@@ -5,6 +5,9 @@ import model.Ingredient;
 
 import java.util.Collections;
 
+/*
+Represents a Brown sugar milk tea. Lists the ingredients used in the brown sugar milk tea
+ */
 public class BrownSugarBlack extends Drink {
 
 
