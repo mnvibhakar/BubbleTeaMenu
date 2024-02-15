@@ -10,13 +10,14 @@ import java.util.Collections;
 
 public class Menu {
 
-    private ArrayList<Drink> drinks;
+    private ArrayList<Drink> drinks; //List of drinks on the menu
     private Drink drink1;
     private Drink drink2;
     private Drink drink3;
     private Drink drink4;
 
     // Effects: Creates a new menu with a list of all the current drinks to be sold
+    // sets the current specials as specified
     public Menu(String special1, String special2) {
         drink1 = new Classic();
         drink2 = new BrownSugarBlack();
@@ -43,7 +44,7 @@ public class Menu {
         return null;
     }
 
-    public ArrayList<Drink> getDrinksOrdered() {
+    public ArrayList<Drink> getDrinks() {
         return drinks;
     }
 }

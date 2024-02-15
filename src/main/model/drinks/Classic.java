@@ -6,7 +6,7 @@ import model.Ingredient;
 
 public class Classic extends Drink {
 
-    private Ingredient ingredient1 = new Ingredient("classic", 300);
+    private Ingredient ingredient1 = new Ingredient("classic", 300); //ingredient for classic milk tea
 
     // Effects: Creates a new Classic Milt tea Drink with Pearls
     public Classic() {
@@ -17,7 +17,7 @@ public class Classic extends Drink {
     }
 
     // Effects: adds ingredients to the drink based on the specifications of the drink
-    // Modifies: this.ingredients, ingredient1
+    // Modifies: this, ingredient1
     @Override
     public void updateIngredients() {
         if (this.size == 'l') {

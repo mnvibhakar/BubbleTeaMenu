@@ -21,7 +21,7 @@ public class MangoFruitTea extends Drink {
 
     //Effects: updates the amount of each ingredient based on the size, ice level, and toppings
     //         Adds the ingredients to the list of ingredients
-    //Modifies: This
+    //Modifies: This, ingredients
     @Override
     public void updateIngredients() {
         if (this.size == 'l') {

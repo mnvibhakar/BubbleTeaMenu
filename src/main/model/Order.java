@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Order {
 
     private static final double TAX_RATE = 0.08; //The sales tax rate applied to final orders
-    private double totalPrice;               // The total of price of all drinks in the order
+    private double totalPrice;                   // The total of price of all drinks in the order
     private ArrayList<Drink> drinksOrdered;      // A list of all drinks in the order
 
     // Effects: Creates new order

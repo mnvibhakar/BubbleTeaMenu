@@ -20,7 +20,7 @@ public class BrownSugarBlack extends Drink {
     }
 
     // Effects: Updates the amount of each ingredient based on drink specifications
-    // Modifies: this.ingredients, ingredient1, ingredient2
+    // Modifies: this, ingredient1, ingredient2
     @Override
     public void updateIngredients() {
         if (this.size == 'l') {

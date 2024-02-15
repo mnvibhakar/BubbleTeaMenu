@@ -5,7 +5,7 @@ import model.Ingredient;
 
 public class MatchaLatte extends Drink {
 
-    private Ingredient ingredient1 = new Ingredient("matcha", 400);
+    private Ingredient ingredient1 = new Ingredient("matcha", 400); //ingredient for matcha latte
 
     // Effects: Creates a new Matcha Latte Drink
     public MatchaLatte() {
@@ -15,7 +15,7 @@ public class MatchaLatte extends Drink {
     }
 
     // Effects: adds ingredients to the drink based on the current specifications
-    // Modifies this.ingredients, ingredient1
+    // Modifies this, ingredient1
     @Override
     public void updateIngredients() {
         if (super.size == 'l') {

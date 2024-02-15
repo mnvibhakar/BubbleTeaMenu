@@ -3,7 +3,7 @@ package model;
 public class Ingredient {
 
     private String name;  // Name of the ingredient
-    private int amount;   // Amount of the ingredient, in ml or grams
+    private int amount;   // Amount of the ingredient, uses various measurements based on the ingredient type
 
     // Effects: sets the characteristics of the ingredient as desired
     public Ingredient(String n, int a) {
@@ -11,6 +11,8 @@ public class Ingredient {
         this.amount = a;
     }
 
+    //Effects: changes the amount of the ingredient by the given amount, sets it to 0 if this results in a negative
+    //Modifies: This
     public void addAmount(double newAmount) {
         if (this.amount + newAmount > 0) {
             this.amount += newAmount;

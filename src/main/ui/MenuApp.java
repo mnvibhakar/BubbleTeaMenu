@@ -11,7 +11,7 @@ public class MenuApp {
 
     private Menu menu;
     private ArrayList<Order> orderLog;
-    private int managerPasscode;
+    private final int managerPasscode = 1234;
     private Scanner input;
     private String special1;
     private String special2;
@@ -20,6 +20,7 @@ public class MenuApp {
         runMenu();
     }
 
+    //Effects: Runs the app
     private void runMenu() {
         boolean keepGoing = true;
         String command = null;
@@ -40,14 +41,15 @@ public class MenuApp {
         System.out.println("\nTill next time!");
     }
 
+    //Effects: Initializes order log and input scanner
+    //Modifies: orderLog, input
     private void init() {
-        managerPasscode = 1234;
         orderLog = new ArrayList<>();
-        menu = new Menu("","");
         input = new Scanner(System.in);
         input.useDelimiter("\n");
     }
 
+    //Effects: displays the base options for the app
     private void displayOptions() {
         System.out.println("\nChoose From:");
         System.out.println("\to -> Order Drinks");
@@ -56,6 +58,7 @@ public class MenuApp {
         System.out.println("\tq -> Quit");
     }
 
+    //Effects: reads the user input and selects the corresponding action
     private void processCommand(String command) {
         if (command.equals("o")) {
             orderDrinks();
@@ -68,6 +71,7 @@ public class MenuApp {
         }
     }
 
+    //Effects: orders drinks as specified by the user
     private void orderDrinks() {
         Order currentOrder = new Order();
         boolean continueOrder = true;
@@ -93,9 +97,10 @@ public class MenuApp {
 
     }
 
+    //Effects: returns a new drink with the chosen name
     private Drink getDrink() {
         System.out.println("\nChoose Drink: ");
-        for (Drink drink : menu.getDrinksOrdered()) {
+        for (Drink drink : menu.getDrinks()) {
             System.out.println(drink.getName());
         }
         String drinkName = input.next().toLowerCase();
@@ -130,6 +135,7 @@ public class MenuApp {
 
     //Effects: Prints the drinks in the current order, prints the price pre-tax
     //         Applies tax to the price, prints post-tax price, adds order to order log
+    //Modifies: orderLog
     private void printDrinksOrdered(Order currentOrder) {
         System.out.println("\nDrinks Ordered: ");
         for (Drink drink : currentOrder.getDrinksOrdered()) {
@@ -146,6 +152,7 @@ public class MenuApp {
         orderLog.add(currentOrder);
     }
 
+    //Effects: Displays the options for stats, reads user input, and selects the corresponding stat action
     private void viewStats() {
         System.out.println("Manager Passcode:");
         int code = input.nextInt();
@@ -164,6 +171,7 @@ public class MenuApp {
         }
     }
 
+    //Effects: displays stats about the price of all orders in orderLog
     private void displayPriceStats() {
         int numDrinksOrdered = 0;
         double totalPriceAllDrinks = 0;
@@ -180,6 +188,7 @@ public class MenuApp {
         System.out.println(averageOrderPrice);
     }
 
+    //Effects: Displays stats about the ingredients of all orders in orderLog
     private void displayIngredientStats() {
         System.out.println("\nWhat ingredient would you like to view?");
         String ingredient = input.next().toLowerCase();
@@ -192,6 +201,8 @@ public class MenuApp {
 
     }
 
+    //Effects: Changes what drinks are on special
+    //Modifies: firstSpecial, secondSpecial
     private void setNewSpecials() {
         System.out.println("Manager Passcode:");
         int code = input.nextInt();

@@ -27,9 +27,10 @@ public abstract class Drink {
 
     public abstract void updateIngredients();
 
-    // Requires: 0 <= exTop <= 2
+    // Requires: 0 <= exTop <= 2, 0 <= ice <= 1, 0 <= sugar <= 1
     // Effects: Applies the given specifications to the drink
     //          updates the price of the drink based on the given specifications
+    //Modifies: This
     public void updateDrink(String size, ArrayList<String> exTop, double ice, double sugar) {
         if (size.equals("l")) {
             this.size = 'l';
