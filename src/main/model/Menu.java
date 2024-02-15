@@ -17,13 +17,19 @@ public class Menu {
     private Drink drink4;
 
     // Effects: Creates a new menu with a list of all the current drinks to be sold
-    public Menu() {
+    public Menu(String special1, String special2) {
         drink1 = new Classic();
         drink2 = new BrownSugarBlack();
         drink3 = new MatchaLatte();
         drink4 = new MangoFruitTea();
         drinks = new ArrayList<Drink>();
         Collections.addAll(drinks, drink1, drink2, drink3, drink4);
+        for (Drink drink : drinks) {
+            drink.setSpecial(false);
+            if (drink.getName().equals(special1) || drink.getName().equals(special2)) {
+                drink.setSpecial(true);
+            }
+        }
     }
 
     // Effects: returns the drink on the menu with the given name,
@@ -35,17 +41,6 @@ public class Menu {
             }
         }
         return null;
-    }
-
-    // Effects: Sets the drinks to either special or not special based on the given specials
-    // Modifies: this.drinks
-    public void setSpecials(String special1, String special2) {
-        for (Drink drink : drinks) {
-            drink.setSpecial(false);
-            if (drink.getName().equals(special1) || drink.getName().equals(special2)) {
-                drink.setSpecial(true);
-            }
-        }
     }
 
     public ArrayList<Drink> getDrinksOrdered() {

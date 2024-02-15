@@ -31,7 +31,7 @@ public abstract class Drink {
     // Effects: Applies the given specifications to the drink
     //          updates the price of the drink based on the given specifications
     public void updateDrink(String size, ArrayList<String> exTop, double ice, double sugar) {
-        if ("l" == size) {
+        if (size.equals("l")) {
             this.size = 'l';
             this.price += 0.5;
         }
@@ -72,14 +72,22 @@ public abstract class Drink {
         return this.sugar;
     }
 
+    public boolean getIsSpecial() {
+        return this.isSpecial;
+    }
+
+    //Effects: Returns the amount of the given ingredient used in the drink
     public int getIngredientAmount(String n) {
-        int amount = 0;
         for (Ingredient ingredient : ingredients) {
             if (ingredient.getName().equals(n)) {
-                amount += ingredient.getAmount();
+                return ingredient.getAmount();
             }
         }
-        return amount;
+        return 0;
+    }
+
+    public char getSize() {
+        return this.size;
     }
 }
 

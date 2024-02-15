@@ -13,6 +13,8 @@ public class MenuApp {
     private ArrayList<Order> orderLog;
     private int managerPasscode;
     private Scanner input;
+    private String special1;
+    private String special2;
 
     public MenuApp() {
         runMenu();
@@ -42,7 +44,7 @@ public class MenuApp {
     private void init() {
         managerPasscode = 1234;
         orderLog = new ArrayList<Order>();
-        menu = new Menu();
+        menu = new Menu("","");
         input = new Scanner(System.in);
         input.useDelimiter("\n");
     }
@@ -98,7 +100,7 @@ public class MenuApp {
             System.out.println(drink.getName());
         }
         String drinkName = input.next().toLowerCase();
-        Drink drink = menu.findDrink(drinkName);
+        Drink drink = new Menu(special1, special2).findDrink(drinkName);
         return drink;
     }
 
@@ -133,6 +135,9 @@ public class MenuApp {
     private void printDrinksOrdered(Order currentOrder) {
         System.out.println("\nDrinks Ordered: ");
         for (Drink drink : currentOrder.getDrinksOrdered()) {
+            if (drink.getName().equals("classic milk tea")) {
+                System.out.println("it worked");
+            }
             System.out.println(drink.getName());
         }
         System.out.println("\nTotal Price Pre-tax: ");
@@ -163,7 +168,7 @@ public class MenuApp {
 
     private void displayPriceStats() {
         int numDrinksOrdered = 0;
-        int totalPriceAllDrinks = 0;
+        double totalPriceAllDrinks = 0;
         for (Order order: orderLog) {
             numDrinksOrdered += order.getDrinksOrdered().size();
             totalPriceAllDrinks += order.getTotalPrice();
@@ -194,10 +199,11 @@ public class MenuApp {
         int code = input.nextInt();
         if (code == managerPasscode) {
             System.out.println("First Special?");
-            String special1 = input.next().toLowerCase();
+            String firstSpecial = input.next().toLowerCase();
             System.out.println("Second Special?");
-            String special2 = input.next().toLowerCase();
-            menu.setSpecials(special1, special2);
+            String secondSpecial = input.next().toLowerCase();
+            special1 = firstSpecial;
+            special2 = secondSpecial;
         } else {
             System.out.println("Invalid Code");
         }

@@ -12,7 +12,11 @@ public class Ingredient {
     }
 
     public void addAmount(double newAmount) {
-        this.amount += newAmount;
+        if (this.amount + newAmount > 0) {
+            this.amount += newAmount;
+        } else {
+            this.amount = 0;
+        }
     }
 
     public String getName() {

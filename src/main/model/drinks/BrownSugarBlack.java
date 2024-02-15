@@ -30,7 +30,7 @@ public class BrownSugarBlack extends Drink {
         }
 
         ingredient1.addAmount((1 - this.ice) * 50);
-        ingredient1.addAmount(-25 * this.toppings.size());
+        ingredient1.addAmount(-25 * (this.toppings.size() - 1));
 
         Collections.addAll(this.ingredients, ingredient1, ingredient2);
     }

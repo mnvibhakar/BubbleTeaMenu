@@ -40,10 +40,13 @@ public class Order {
         return this.totalPrice;
     }
 
+    //Effects: Changes the prcie of the order by applying tax to the order
+    //Modifies: This
     public void applyTax() {
-        totalPrice += TAX_RATE * totalPrice;
+        this.totalPrice += TAX_RATE * totalPrice;
     }
 
+    //Effects: returns the amount of the given ingredient used between all drinks in the order
     public int getIngredientAmount(String name) {
         int ingredientAmount = 0;
         for (Drink drink : drinksOrdered) {

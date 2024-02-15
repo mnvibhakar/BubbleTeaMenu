@@ -25,7 +25,7 @@ public class Classic extends Drink {
             ingredient1.addAmount(100);
         }
         ingredient1.addAmount((1 - this.ice) * 150);
-        ingredient1.addAmount(-50 * this.toppings.size());
+        ingredient1.addAmount(-50 * (this.toppings.size() - 1));
         this.ingredients.add(ingredient1);
     }
 }
