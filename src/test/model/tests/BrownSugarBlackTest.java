@@ -1,7 +1,6 @@
 package model.tests;
 
 import model.drinks.BrownSugarBlack;
-import model.drinks.Classic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

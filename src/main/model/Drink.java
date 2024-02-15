@@ -2,7 +2,7 @@ package model;
 
 import model.Ingredient;
 import java.util.ArrayList;
-import java.util.Collections;
+
 
 
 public abstract class Drink {
@@ -35,7 +35,7 @@ public abstract class Drink {
             this.size = 'l';
             this.price += 0.5;
         }
-        if (true == this.isSpecial) {
+        if (this.isSpecial) {
             this.price *= 0.8;
         }
         this.price += 0.5 * exTop.size();

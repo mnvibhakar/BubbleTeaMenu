@@ -3,7 +3,6 @@ package model.drinks;
 import model.Drink;
 import model.Ingredient;
 
-import java.util.ArrayList;
 
 public class Classic extends Drink {
 

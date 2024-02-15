@@ -1,6 +1,5 @@
 package model.tests;
 
-import model.drinks.Classic;
 import model.drinks.MatchaLatte;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

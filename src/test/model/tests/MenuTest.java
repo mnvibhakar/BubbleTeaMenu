@@ -27,7 +27,7 @@ public class MenuTest {
     @Test
     void testFindDrink() {
         assertEquals(drink1.getName(), menu.findDrink("classic milk tea").getName());
-        assertEquals(null, menu.findDrink("not on menu"));
+        assertNull(menu.findDrink("not on menu"));
     }
 
     @Test

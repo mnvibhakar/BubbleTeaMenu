@@ -11,7 +11,7 @@ public class Order {
     // Effects: Creates new order
     public Order() {
         this.totalPrice = 0;
-        drinksOrdered = new ArrayList<Drink>();
+        drinksOrdered = new ArrayList<>();
     }
 
     // Effects: adds the given drink to list of drinks ordered and adds its price to the order price
@@ -40,7 +40,7 @@ public class Order {
         return this.totalPrice;
     }
 
-    //Effects: Changes the prcie of the order by applying tax to the order
+    //Effects: Changes the price of the order by applying tax to the order
     //Modifies: This
     public void applyTax() {
         this.totalPrice += TAX_RATE * totalPrice;

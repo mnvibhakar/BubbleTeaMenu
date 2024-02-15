@@ -29,7 +29,6 @@ public class MenuApp {
         while (keepGoing) {
             displayOptions();
             command = input.next().toLowerCase();
-            ;
 
             if (command.equals("q")) {
                 keepGoing = false;
@@ -43,7 +42,7 @@ public class MenuApp {
 
     private void init() {
         managerPasscode = 1234;
-        orderLog = new ArrayList<Order>();
+        orderLog = new ArrayList<>();
         menu = new Menu("","");
         input = new Scanner(System.in);
         input.useDelimiter("\n");
@@ -100,8 +99,7 @@ public class MenuApp {
             System.out.println(drink.getName());
         }
         String drinkName = input.next().toLowerCase();
-        Drink drink = new Menu(special1, special2).findDrink(drinkName);
-        return drink;
+        return new Menu(special1, special2).findDrink(drinkName);
     }
 
     //Effects: Chooses the options for the given drink, orders the drink
@@ -113,9 +111,9 @@ public class MenuApp {
         System.out.println("\nChoose Sugar (0,0.25,0.5,0.75,1): ");
         double sugar = input.nextDouble();
 
-        ArrayList<String> exTop = new ArrayList<String>();
+        ArrayList<String> exTop = new ArrayList<>();
         boolean moreTop = true;
-        while (exTop.size() <= 2 && moreTop == true) {
+        while (exTop.size() <= 2 && moreTop) {
             System.out.println("\nAny extra toppings? (y,n) ");
             String option = input.next();
             if (option.equals("y")) {

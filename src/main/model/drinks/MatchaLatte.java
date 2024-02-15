@@ -3,9 +3,6 @@ package model.drinks;
 import model.Drink;
 import model.Ingredient;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 public class MatchaLatte extends Drink {
 
     private Ingredient ingredient1 = new Ingredient("matcha", 400);

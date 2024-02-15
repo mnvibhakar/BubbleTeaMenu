@@ -22,7 +22,7 @@ public class Menu {
         drink2 = new BrownSugarBlack();
         drink3 = new MatchaLatte();
         drink4 = new MangoFruitTea();
-        drinks = new ArrayList<Drink>();
+        drinks = new ArrayList<>();
         Collections.addAll(drinks, drink1, drink2, drink3, drink4);
         for (Drink drink : drinks) {
             drink.setSpecial(false);
