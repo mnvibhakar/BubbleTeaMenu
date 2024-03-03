@@ -11,7 +11,7 @@ public class IngredientTest {
 
     @BeforeEach
     void setup() {
-        ingredient = new Ingredient("", 400);
+        ingredient = new Ingredient("", "", 400);
     }
 
     @Test

@@ -3,10 +3,14 @@ package model;
 import model.Ingredient;
 import java.util.ArrayList;
 
+import model.persistence.Writable;
+import org.json.JSONObject;
+import org.json.JSONArray;
+
 /*
 Represents the base attributes of a drink, including name, ingredients, price, toppings, size, sugar, and ice
  */
-public abstract class Drink {
+public class Drink implements Writable {
 
     protected String name;                         // Name of the drink
     protected ArrayList<Ingredient> ingredients;   // Ingredients included in the drink
@@ -24,7 +28,25 @@ public abstract class Drink {
         this.ingredients = new ArrayList<>();
     }
 
-    public abstract void updateIngredients();
+    public void updateIngredients() {
+        if (size == 'l') {
+            for (Ingredient i : ingredients) {
+                if (i.getType().equals("tea base")) {
+                    i.addAmount(100);
+                } else if (i.getType().equals("fruit")) {
+                    i.addAmount(1);
+                } else if (i.getType().equals("milk")) {
+                    i.addAmount(20);
+                }
+            }
+        }
+        for (Ingredient i : ingredients) {
+            if (i.getType().equals("tea base")) {
+                i.addAmount(100 * ice);
+                i.addAmount(-50 * toppings.size());
+            }
+        }
+    }
 
     // Requires: 0 <= exTop <= 2, 0 <= ice <= 1, 0 <= sugar <= 1
     // Effects: Applies the given specifications to the drink
@@ -42,6 +64,62 @@ public abstract class Drink {
         this.ice = ice;
         this.sugar = sugar;
         toppings.addAll(exTop);
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("Ingredients", ingredientsToJson());
+        json.put("price", price);
+        json.put("toppings", toppingsToJson());
+        json.put("size", size);
+        json.put("ice", ice);
+        json.put("sugar", sugar);
+        json.put("special", isSpecial);
+        return json;
+    }
+
+    //returns toppings in the drink as a JSONArray
+    private JSONArray toppingsToJson() {
+        JSONArray jsonArray = new JSONArray();
+        for (String t : toppings) {
+            jsonArray.put(toppingToJson(t));
+        }
+        return jsonArray;
+    }
+
+    //Effects: returns a topping as a JSON object
+    private JSONObject toppingToJson(String t) {
+        JSONObject json = new JSONObject();
+        json.put("name", t);
+        return json;
+    }
+
+    //Effects: returns the ingredients in the drink as a JSONArray
+    public JSONArray ingredientsToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Ingredient i : ingredients) {
+            jsonArray.put(i.toJson());
+        }
+
+        return jsonArray;
+    }
+
+    //Effects: Adds a new ingredient with the given specifications
+    public void addIngredient(String t, String n, int a) {
+        ingredients.add(new Ingredient(t,n,a));
+    }
+
+    //Effects: Returns the amount of the given ingredient used in the drink
+    public int getIngredientAmount(String n) {
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient.getName().equals(n)) {
+                return ingredient.getAmount();
+            }
+        }
+        return 0;
     }
 
     public void setSpecial(boolean status) {
@@ -74,16 +152,6 @@ public abstract class Drink {
 
     public boolean getIsSpecial() {
         return this.isSpecial;
-    }
-
-    //Effects: Returns the amount of the given ingredient used in the drink
-    public int getIngredientAmount(String n) {
-        for (Ingredient ingredient : ingredients) {
-            if (ingredient.getName().equals(n)) {
-                return ingredient.getAmount();
-            }
-        }
-        return 0;
     }
 
     public char getSize() {
