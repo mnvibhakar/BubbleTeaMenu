@@ -1,11 +1,15 @@
 package model;
 
+import model.persistence.Writable;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /*
 Represents an order, with a list of drinks that have been ordered, and records the total price
  */
-public class Order {
+public class Order implements Writable {
 
     private static final double TAX_RATE = 0.08; //The sales tax rate applied to final orders
     private double totalPrice;                   // The total of price of all drinks in the order
@@ -56,5 +60,21 @@ public class Order {
             ingredientAmount += drink.getIngredientAmount(name);
         }
         return ingredientAmount;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("total price", totalPrice);
+        json.put("drinks", drinksToJson());
+        return json;
+    }
+
+    private JSONArray drinksToJson() {
+        JSONArray jsonArray = new JSONArray();
+        for (Drink d : drinksOrdered) {
+            jsonArray.put(d.toJson());
+        }
+        return jsonArray;
     }
 }

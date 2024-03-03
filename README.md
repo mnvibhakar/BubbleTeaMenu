@@ -23,4 +23,9 @@ Being able to gather and view data would help us be more efficient and improve t
 - As an employee, I want to be able to add a drink to the drink log for the current time period
 - As a manager, I want to be able to change what drinks are on special
 - As a manager, I want to be able to view stats about the drinks ordered during a given time period
-
+- As a user, when I quit I want it to automatically save the order log
+- As a user, when I open the application, I want it to automatically open the previous order log
+- As a user, when I open the application, I want it to automatically open the previous menu
+- As a manager, I want to be able to save the current order log and start a new order log
+- As a manager, I want to be able to open any previous order log and view stats about it
+- As a manger, I want to be able to save changes to the menu, including the current specials and adding or removing drinks from the menu
