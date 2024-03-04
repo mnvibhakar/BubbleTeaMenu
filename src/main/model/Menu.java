@@ -1,9 +1,5 @@
 package model;
 
-import model.drinks.BrownSugarBlack;
-import model.drinks.Classic;
-import model.drinks.MangoFruitTea;
-import model.drinks.MatchaLatte;
 import model.persistence.Writable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,28 +13,20 @@ Represents the menu, with a list of all current drinks
 public class Menu implements Writable {
 
     private ArrayList<Drink> drinks; //List of drinks on the menu
-    private Drink drink1;
-    private Drink drink2;
-    private Drink drink3;
-    private Drink drink4;
     private String special1;
     private String special2;
 
     // Effects: Creates a new menu with a list of all the current drinks to be sold
     // sets the current specials as specified
     public Menu(String s1, String s2) {
-        drink1 = new Classic();
-        drink2 = new BrownSugarBlack();
-        drink3 = new MatchaLatte();
-        drink4 = new MangoFruitTea();
         drinks = new ArrayList<>();
-        Collections.addAll(drinks, drink1, drink2, drink3, drink4);
         special1 = s1;
         special2 = s2;
         for (Drink drink : drinks) {
-            drink.setSpecial(false);
             if (drink.getName().equals(special1) || drink.getName().equals(special2)) {
                 drink.setSpecial(true);
+            } else {
+                drink.setSpecial(false);
             }
         }
     }
@@ -57,6 +45,18 @@ public class Menu implements Writable {
             }
         }
         return null;
+    }
+
+    public void setSpecials(String s1, String s2) {
+        special1 = s1;
+        special2 = s2;
+        for (Drink drink : drinks) {
+            if (drink.getName().equals(special1) || drink.getName().equals(special2)) {
+                drink.setSpecial(true);
+            } else {
+                drink.setSpecial(false);
+            }
+        }
     }
 
     public ArrayList<Drink> getDrinks() {
