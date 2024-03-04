@@ -62,10 +62,13 @@ public class Order implements Writable {
         return ingredientAmount;
     }
 
+    public void setTotalPrice(int p) {
+        totalPrice = p;
+    }
+
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("total price", totalPrice);
         json.put("drinks", drinksToJson());
         return json;
     }

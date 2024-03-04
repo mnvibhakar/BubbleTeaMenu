@@ -1,0 +1,18 @@
+{
+    "special1": "",
+    "drinks": [{
+        "special": false,
+        "size": 0,
+        "price": 5.5,
+        "name": "classic milk tea",
+        "ingredients": [{
+            "amount": 400,
+            "name": "classic",
+            "type": "tea base"
+        }],
+        "toppings": [],
+        "ice": 0,
+        "sugar": 0
+    }],
+    "special2": ""
+}

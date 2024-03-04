@@ -2,6 +2,7 @@ package model;
 
 import model.Ingredient;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import model.persistence.Writable;
 import org.json.JSONObject;
@@ -23,9 +24,13 @@ public class Drink implements Writable {
 
     // Effects: Creates a drink with the specified characteristics
     //          Discounts drink by 20% if it's on special
-    public Drink() {
-        this.toppings = new ArrayList<>();
-        this.ingredients = new ArrayList<>();
+    public Drink(String n, double p, ArrayList<Ingredient> i, boolean s) {
+        toppings = new ArrayList<>();
+        ingredients = new ArrayList<>();
+        name = n;
+        price = p;
+        ingredients.addAll(i);
+        isSpecial = s;
     }
 
     public void updateIngredients() {
@@ -70,7 +75,7 @@ public class Drink implements Writable {
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("name", name);
-        json.put("Ingredients", ingredientsToJson());
+        json.put("ingredients", ingredientsToJson());
         json.put("price", price);
         json.put("toppings", toppingsToJson());
         json.put("size", size);

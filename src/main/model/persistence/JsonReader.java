@@ -7,10 +7,7 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 import java.util.ArrayList;
 
-import model.Drink;
-import model.Ingredient;
-import model.Menu;
-import model.OrderLog;
+import model.*;
 import org.json.*;
 
 public class JsonReader {
@@ -33,6 +30,12 @@ public class JsonReader {
         return parseOrderLog(jsonObject);
     }
 
+    public OrderLogList readOrderLogList() throws IOException {
+        String jsonData = readFile(source);
+        JSONObject jsonObject = new JSONObject(jsonData);
+        return parseOrderLogList(jsonObject);
+    }
+
     // EFFECTS: reads source file as string and returns it
     private String readFile(String source) throws IOException {
         StringBuilder contentBuilder = new StringBuilder();
@@ -42,6 +45,21 @@ public class JsonReader {
         }
 
         return contentBuilder.toString();
+    }
+
+    private OrderLogList parseOrderLogList(JSONObject jsonObject) {
+        OrderLogList orderLogList = new OrderLogList();
+        addOrderLogsToOrderLogList(orderLogList, jsonObject);
+        return orderLogList;
+    }
+
+    private void addOrderLogsToOrderLogList(OrderLogList orderLogList, JSONObject jsonObject) {
+        JSONArray jsonArray = new JSONArray();
+        for (Object json : jsonArray) {
+            JSONObject nextOrderLog = (JSONObject) json;
+            OrderLog orderLog = parseOrderLog(nextOrderLog);
+            orderLogList.addOrderLog(orderLog);
+        }
     }
 
     private Menu parseMenu(JSONObject jsonObject) {
@@ -64,17 +82,50 @@ public class JsonReader {
     }
 
     private OrderLog parseOrderLog(JSONObject jsonObject) {
-        // TODO
-        return null;
+        String name = jsonObject.getString("name");
+        OrderLog orderLog = new OrderLog(name);
+        addOrdersToOrderLog(orderLog, jsonObject);
+        return orderLog;
+    }
+
+    private void addOrdersToOrderLog(OrderLog orderLog, JSONObject jsonObject) {
+        JSONArray jsonArray = jsonObject.getJSONArray(("orders"));
+        for (Object json : jsonArray) {
+            JSONObject nextOrder = (JSONObject) json;
+            Order order = getOrder(nextOrder);
+            orderLog.addOrder(order);
+        }
+    }
+
+    private Order getOrder(JSONObject nextOrder) {
+        ArrayList<Drink> drinks = getDrinks(nextOrder.getJSONArray("drinks"));
+        Order order = new Order();
+        for (Drink d : drinks) {
+            order.addDrink(d);
+        }
+        return order;
+    }
+
+    private ArrayList<Drink> getDrinks(JSONArray nextDrinks) {
+        ArrayList<Drink> drinks = new ArrayList<>();
+        for (Object json : nextDrinks) {
+            JSONObject nextDrink = (JSONObject) json;
+            Drink drink = getDrink(nextDrink);
+            drinks.add(drink);
+        }
+        return drinks;
+    }
+
+    private void addDrinksToOrderLog(OrderLog orderLog, JSONObject jsonObject) {
+
     }
 
     private Drink getDrink(JSONObject drinkJson) {
         String name = drinkJson.getString("name");
-        int price = drinkJson.getInt("price");
+        double price = drinkJson.getInt("price");
         ArrayList<Ingredient> ingredients = getIngredients(drinkJson.getJSONArray("ingredients"));
-        ArrayList<String> toppings = getToppings(drinkJson.getJSONArray("toppings"));
         boolean special = drinkJson.getBoolean("special");
-        Drink drink = new Drink();
+        Drink drink = new Drink(name, price, ingredients, special);
         return drink;
     }
 

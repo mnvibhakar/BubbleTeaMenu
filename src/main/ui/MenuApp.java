@@ -1,9 +1,11 @@
 package ui;
 
-import model.Drink;
-import model.Menu;
-import model.Order;
+import model.*;
+import model.persistence.JsonReader;
+import model.persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -15,14 +17,25 @@ Represents the menu app, processes user input to execute the chosen tasks, inclu
  */
 public class MenuApp {
 
-    private final Menu menu = new Menu("", "");
-    private ArrayList<Order> orderLog;
     private final int managerPasscode = 1234;
+    private static final String MENU_JSON_STORE = "./data/menu.json";
+    private static final String ORDERLOGLIST_JSON_STORE = "./data/orderLogList.json";
+    private static final String ORDERLOG_JSON_STORE = "./data/orderLog.json";
+
+    private Menu menu = new Menu("", "");
+    private OrderLog orderLog;
+    private OrderLogList orderLogList;
+
     private Scanner input;
-    private String special1;
-    private String special2;
+    private JsonWriter menuWriter;
+    private JsonWriter orderLogListWriter;
+    private JsonWriter orderLogWriter;
+    private JsonReader menuReader;
+    private JsonReader orderLogListReader;
+    private JsonReader orderLogReader;
 
     public MenuApp() {
+        init();
         runMenu();
     }
 
@@ -30,8 +43,6 @@ public class MenuApp {
     private void runMenu() {
         boolean keepGoing = true;
         String command;
-
-        init();
 
         while (keepGoing) {
             displayOptions();
@@ -45,12 +56,29 @@ public class MenuApp {
         }
 
         System.out.println("\nTill next time!");
+        try {
+            orderLogWriter.open();
+            orderLogWriter.writeOrderLog(orderLog);
+            orderLogWriter.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Could not write to file " + ORDERLOG_JSON_STORE);
+        }
     }
 
     //Effects: Initializes order log and input scanner
     //Modifies: orderLog, input
     private void init() {
-        orderLog = new ArrayList<>();
+        menuWriter = new JsonWriter(MENU_JSON_STORE);
+        menuReader = new JsonReader(MENU_JSON_STORE);
+        orderLogListWriter = new JsonWriter(ORDERLOGLIST_JSON_STORE);
+        orderLogListReader = new JsonReader(ORDERLOGLIST_JSON_STORE);
+        orderLogWriter = new JsonWriter(ORDERLOG_JSON_STORE);
+        orderLogReader = new JsonReader(ORDERLOG_JSON_STORE);
+        try {
+            orderLog = orderLogReader.readOrderLog();
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + ORDERLOG_JSON_STORE);
+        }
         input = new Scanner(System.in);
         input.useDelimiter("\n");
     }
@@ -59,8 +87,7 @@ public class MenuApp {
     private void displayOptions() {
         System.out.println("\nChoose From:");
         System.out.println("\to -> Order Drinks");
-        System.out.println("\tv -> View Stats");
-        System.out.println("\ts -> Set New Specials");
+        System.out.println("\tm -> Manager Actions");
         System.out.println("\tq -> Quit");
     }
 
@@ -68,12 +95,73 @@ public class MenuApp {
     private void processCommand(String command) {
         if (command.equals("o")) {
             orderDrinks();
-        } else if (command.equals("v")) {
-            viewStats();
-        } else  if (command.equals("s")) {
-            setNewSpecials();
+        } else if (command.equals("m")) {
+            System.out.println("Manager Passcode: ");
+            int code = input.nextInt();
+            if (code == managerPasscode) {
+                doManagerActions();
+            } else {
+                System.out.println("Incorrect Code");
+            }
+
         } else {
             System.out.println("Option not available");
+        }
+    }
+
+    private void doManagerActions() {
+        boolean keepGoing = true;
+        String managerCommand;
+
+        while (keepGoing) {
+            System.out.println("\tv -> View Stats");
+            System.out.println("\ta -> Add new drink to menu");
+            System.out.println("\ts -> Set New Specials");
+            System.out.println("\tn -> Start New Order Log");
+            System.out.println("\tq -> Back to first menu");
+            managerCommand = input.next().toLowerCase();
+
+            if (managerCommand.equals("q")) {
+                keepGoing = false;
+            } else {
+                processManagerCommand(managerCommand);
+            }
+        }
+
+        System.out.println("\nTill next time!");
+
+    }
+
+    private void processManagerCommand(String managerCommand) {
+        if (managerCommand.equals("v")) {
+            viewStats();
+        } else if (managerCommand.equals("a")) {
+            addDrinkToMenu();
+        } else if (managerCommand.equals("s")) {
+            setNewSpecials();
+        } else if (managerCommand.equals("n")) {
+            startNewOrderLog();
+        } else {
+            System.out.println("Option not available");
+        }
+    }
+
+    private void openMenu() {
+        try {
+            menu = menuReader.readMenu();
+        } catch (IOException e) {
+            System.out.println("Unable to read from file " + MENU_JSON_STORE);
+        }
+    }
+
+    private void saveMenu() {
+        try {
+            menuWriter.open();
+            menuWriter.writeMenu(menu);
+            menuWriter.close();
+            System.out.println("Saved new menu to " + MENU_JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file " + MENU_JSON_STORE);
         }
     }
 
@@ -105,12 +193,13 @@ public class MenuApp {
 
     //Effects: returns a new drink with the chosen name
     private Drink getDrink() {
+        openMenu();
         System.out.println("\nChoose Drink: ");
         for (Drink drink : menu.getDrinks()) {
             System.out.println(drink.getName());
         }
         String drinkName = input.next().toLowerCase();
-        return new Menu(special1, special2).findDrink(drinkName);
+        return menu.findDrink(drinkName);
     }
 
     //Effects: Chooses the options for the given drink, orders the drink
@@ -155,25 +244,21 @@ public class MenuApp {
         currentOrder.applyTax();
         System.out.println("\nTotal Price Post-tax: ");
         System.out.println(currentOrder.getTotalPrice());
-        orderLog.add(currentOrder);
+        orderLog.addOrder(currentOrder);
     }
 
     //Effects: Displays the options for stats, reads user input, and selects the corresponding stat action
     private void viewStats() {
-        System.out.println("Manager Passcode:");
-        int code = input.nextInt();
-        if (code == managerPasscode) {
-            System.out.println("\nWhich stat would you like to view?");
-            System.out.println("\ti -> ingredients");
-            System.out.println("\tp -> price");
-            String selectedOption = input.next().toLowerCase();
-            if (selectedOption.equals("i")) {
-                displayIngredientStats();
-            } else if (selectedOption.equals("p")) {
-                displayPriceStats();
-            } else {
-                System.out.println("Selection not valid");
-            }
+        System.out.println("\nWhich stat would you like to view?");
+        System.out.println("\ti -> ingredients");
+        System.out.println("\tp -> price");
+        String selectedOption = input.next().toLowerCase();
+        if (selectedOption.equals("i")) {
+            displayIngredientStats();
+        } else if (selectedOption.equals("p")) {
+            displayPriceStats();
+        } else {
+            System.out.println("Selection not valid");
         }
     }
 
@@ -181,11 +266,11 @@ public class MenuApp {
     private void displayPriceStats() {
         int numDrinksOrdered = 0;
         double totalPriceAllDrinks = 0;
-        for (Order order: orderLog) {
+        for (Order order: orderLog.getOrders()) {
             numDrinksOrdered += order.getDrinksOrdered().size();
             totalPriceAllDrinks += order.getTotalPrice();
         }
-        double averageOrderPrice = totalPriceAllDrinks / orderLog.size();
+        double averageOrderPrice = totalPriceAllDrinks / orderLog.getOrders().size();
         System.out.println("\nNumber of Drinks Ordered:");
         System.out.println(numDrinksOrdered);
         System.out.println("\nTotal Revenue:");
@@ -199,7 +284,7 @@ public class MenuApp {
         System.out.println("\nWhat ingredient would you like to view?");
         String ingredient = input.next().toLowerCase();
         int ingredientAmount = 0;
-        for (Order order : orderLog) {
+        for (Order order : orderLog.getOrders()) {
             ingredientAmount += order.getIngredientAmount(ingredient);
         }
         System.out.println("\nAmount used:");
@@ -210,17 +295,69 @@ public class MenuApp {
     //Effects: Changes what drinks are on special
     //Modifies: firstSpecial, secondSpecial
     private void setNewSpecials() {
-        System.out.println("Manager Passcode:");
-        int code = input.nextInt();
-        if (code == managerPasscode) {
-            System.out.println("First Special?");
-            String firstSpecial = input.next().toLowerCase();
-            System.out.println("Second Special?");
-            String secondSpecial = input.next().toLowerCase();
-            special1 = firstSpecial;
-            special2 = secondSpecial;
-        } else {
-            System.out.println("Invalid Code");
+        System.out.println("First Special?");
+        String firstSpecial = input.next().toLowerCase();
+        System.out.println("Second Special?");
+        String secondSpecial = input.next().toLowerCase();
+        openMenu();
+        menu.setSpecials(firstSpecial, secondSpecial);
+        saveMenu();
+    }
+
+    private void addDrinkToMenu() {
+        openMenu();
+        System.out.println("\nDrink Name?");
+        String name = input.next().toLowerCase();
+        System.out.println("\nDrink Price?");
+        double price = input.nextDouble();
+        ArrayList<Ingredient> ingredients = new ArrayList<>();
+        chooseIngredients(ingredients);
+        Drink drink = new Drink(name, price, ingredients, false);
+        menu.addDrink(drink);
+        saveMenu();
+    }
+
+    private void chooseIngredients(ArrayList<Ingredient> ingredients) {
+        boolean keepGoing = true;
+        while (keepGoing) {
+            System.out.println("\nadd ingredient? (y/n)");
+            String response = input.next().toLowerCase();
+            if (response.equals("y")) {
+                System.out.println("\ntype?");
+                String type = input.next().toLowerCase();
+                System.out.println("\nname?");
+                String name = input.next().toLowerCase();
+                System.out.println("\namount?");
+                int amount = input.nextInt();
+                Ingredient ingredient = new Ingredient(type, name, amount);
+                ingredients.add(ingredient);
+            } else {
+                keepGoing = false;
+            }
         }
+
+
+    }
+
+    private void startNewOrderLog() {
+        try {
+            orderLogList = orderLogListReader.readOrderLogList();
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + ORDERLOGLIST_JSON_STORE);
+        }
+        orderLogList.addOrderLog(orderLog);
+        try {
+            orderLogListWriter.open();
+            orderLogListWriter.writeOrderLogList(orderLogList);
+            orderLogListWriter.close();
+            System.out.println("Added Previous order log to Order Log List");
+            System.out.println("\nSaved Order Log List to " + ORDERLOGLIST_JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file " + ORDERLOGLIST_JSON_STORE);
+        }
+        System.out.println("name?");
+        String name = input.next();
+        orderLog = new OrderLog(name);
+        System.out.println("Created new order log: " + name);
     }
 }

@@ -8,9 +8,11 @@ import java.util.ArrayList;
 
 public class OrderLog implements Writable {
 
+    private String name;
     private ArrayList<Order> orders;
 
-    public OrderLog() {
+    public OrderLog(String n) {
+        name = n;
         orders = new ArrayList<>();
     }
 
@@ -19,9 +21,14 @@ public class OrderLog implements Writable {
         orders.add(o);
     }
 
+    public void setName(String n) {
+        name = n;
+    }
+
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
+        json.put("name", name);
         json.put("orders", ordersToJson());
         return json;
     }
@@ -33,5 +40,9 @@ public class OrderLog implements Writable {
             jsonArray.put(o.toJson());
         }
         return jsonArray;
+    }
+
+    public ArrayList<Order> getOrders() {
+        return orders;
     }
 }
