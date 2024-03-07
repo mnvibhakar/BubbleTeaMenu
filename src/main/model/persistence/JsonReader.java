@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import java.util.ArrayList;
 
 import model.*;
+import model.exceptions.DuplicateNameException;
 import org.json.*;
 
 public class JsonReader {
@@ -54,7 +55,7 @@ public class JsonReader {
     }
 
     private void addOrderLogsToOrderLogList(OrderLogList orderLogList, JSONObject jsonObject) {
-        JSONArray jsonArray = new JSONArray();
+        JSONArray jsonArray = jsonObject.getJSONArray("order logs");
         for (Object json : jsonArray) {
             JSONObject nextOrderLog = (JSONObject) json;
             OrderLog orderLog = parseOrderLog(nextOrderLog);
@@ -63,9 +64,7 @@ public class JsonReader {
     }
 
     private Menu parseMenu(JSONObject jsonObject) {
-        String special1 = jsonObject.getString("special1");
-        String special2 = jsonObject.getString("special2");
-        Menu menu = new Menu(special1, special2);
+        Menu menu = new Menu();
         addDrinksToMenu(menu, jsonObject);
         return menu;
     }
@@ -77,7 +76,11 @@ public class JsonReader {
         for (Object json : jsonArray) {
             JSONObject nextDrink = (JSONObject) json;
             Drink drink = getDrink(nextDrink);
-            menu.addDrink(drink);
+            try {
+                menu.addDrink(drink);
+            } catch (DuplicateNameException e) {
+                throw new Error("incorrect name duplication occurrence");
+            }
         }
     }
 

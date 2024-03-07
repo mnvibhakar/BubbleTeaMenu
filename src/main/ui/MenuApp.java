@@ -1,9 +1,10 @@
 package ui;
 
 import model.*;
-import model.persistence.JsonReader;
-import model.persistence.JsonWriter;
 
+import model.exceptions.DuplicateNameException;
+import model.persistence.JsonWriter;
+import model.persistence.JsonReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class MenuApp {
     private static final String ORDERLOGLIST_JSON_STORE = "./data/orderLogList.json";
     private static final String ORDERLOG_JSON_STORE = "./data/orderLog.json";
 
-    private Menu menu = new Menu("", "");
+    private Menu menu = new Menu();
     private OrderLog orderLog;
     private OrderLogList orderLogList;
 
@@ -234,9 +235,6 @@ public class MenuApp {
     private void printDrinksOrdered(Order currentOrder) {
         System.out.println("\nDrinks Ordered: ");
         for (Drink drink : currentOrder.getDrinksOrdered()) {
-            if (drink.getName().equals("classic milk tea")) {
-                System.out.println("it worked");
-            }
             System.out.println(drink.getName());
         }
         System.out.println("\nTotal Price Pre-tax: ");
@@ -313,7 +311,12 @@ public class MenuApp {
         ArrayList<Ingredient> ingredients = new ArrayList<>();
         chooseIngredients(ingredients);
         Drink drink = new Drink(name, price, ingredients, false);
-        menu.addDrink(drink);
+        try {
+            menu.addDrink(drink);
+        } catch (DuplicateNameException e) {
+            System.out.println("Drink with that name already exists");
+        }
+
         saveMenu();
     }
 
@@ -345,19 +348,32 @@ public class MenuApp {
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + ORDERLOGLIST_JSON_STORE);
         }
-        orderLogList.addOrderLog(orderLog);
-        try {
-            orderLogListWriter.open();
-            orderLogListWriter.writeOrderLogList(orderLogList);
-            orderLogListWriter.close();
-            System.out.println("Added Previous order log to Order Log List");
-            System.out.println("\nSaved Order Log List to " + ORDERLOGLIST_JSON_STORE);
-        } catch (FileNotFoundException e) {
-            System.out.println("Unable to write to file " + ORDERLOGLIST_JSON_STORE);
-        }
         System.out.println("name?");
         String name = input.next();
-        orderLog = new OrderLog(name);
-        System.out.println("Created new order log: " + name);
+        if (checkName(name)) {
+            orderLogList.addOrderLog(orderLog);
+            try {
+                orderLogListWriter.open();
+                orderLogListWriter.writeOrderLogList(orderLogList);
+                orderLogListWriter.close();
+                System.out.println("Added Previous order log to Order Log List");
+                System.out.println("\nSaved Order Log List to " + ORDERLOGLIST_JSON_STORE);
+            } catch (FileNotFoundException e) {
+                System.out.println("Unable to write to file " + ORDERLOGLIST_JSON_STORE);
+            }
+
+            orderLog = new OrderLog(name);
+            System.out.println("Created new order log: " + name);
+        }
+    }
+
+    private boolean checkName(String name) {
+        Boolean nameNotAlreadyUsed = true;
+        for (OrderLog o : orderLogList.getOrderLogs()) {
+            if (o.getName().equals(name)) {
+                nameNotAlreadyUsed = false;
+            }
+        }
+        return (nameNotAlreadyUsed && !orderLog.getName().equals(name));
     }
 }
