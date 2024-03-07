@@ -8,6 +8,7 @@ import model.persistence.Writable;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+
 /*
 Represents the base attributes of a drink, including name, ingredients, price, toppings, size, sugar, and ice
  */
