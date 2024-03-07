@@ -43,5 +43,6 @@ public class OrderLog implements Writable {
     }
 
     public Object getName() {
-        return name; }
+        return name;
+    }
 }
