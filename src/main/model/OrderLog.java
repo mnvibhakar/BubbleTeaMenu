@@ -21,10 +21,6 @@ public class OrderLog implements Writable {
         orders.add(o);
     }
 
-    public void setName(String n) {
-        name = n;
-    }
-
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
@@ -45,4 +41,7 @@ public class OrderLog implements Writable {
     public ArrayList<Order> getOrders() {
         return orders;
     }
+
+    public Object getName() {
+        return name; }
 }

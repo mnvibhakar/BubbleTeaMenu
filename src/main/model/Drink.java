@@ -47,7 +47,7 @@ public class Drink implements Writable {
         }
         for (Ingredient i : ingredients) {
             if (i.getType().equals("tea base")) {
-                i.addAmount(100 * ice);
+                i.addAmount(100 * (1 - ice));
                 i.addAmount(-50 * toppings.size());
             }
         }
@@ -60,12 +60,14 @@ public class Drink implements Writable {
     public void updateDrink(String size, ArrayList<String> exTop, double ice, double sugar) {
         if (size.equals("l")) {
             this.size = 'l';
-            this.price += 0.5;
+            price += 0.5;
+        } else {
+            this.size = 's';
         }
-        if (this.isSpecial) {
-            this.price *= 0.8;
+        if (isSpecial) {
+            price *= 0.8;
         }
-        this.price += 0.5 * exTop.size();
+        price += 0.5 * exTop.size();
         this.ice = ice;
         this.sugar = sugar;
         toppings.addAll(exTop);

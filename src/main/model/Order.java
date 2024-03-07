@@ -62,7 +62,7 @@ public class Order implements Writable {
         return ingredientAmount;
     }
 
-    public void setTotalPrice(int p) {
+    public void setTotalPrice(double p) {
         totalPrice = p;
     }
 

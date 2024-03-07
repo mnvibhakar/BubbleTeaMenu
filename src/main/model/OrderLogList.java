@@ -17,6 +17,19 @@ public class OrderLogList {
         orderLogs.add(orderLog);
     }
 
+    public ArrayList<OrderLog> getOrderLogs() {
+        return orderLogs;
+    }
+
+    public OrderLog findOrderLog(String n) {
+        for (OrderLog o : orderLogs) {
+            if (o.getName().equals(n)) {
+                return o;
+            }
+        }
+        return null;
+    }
+
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("order logs", orderLogsToJson());

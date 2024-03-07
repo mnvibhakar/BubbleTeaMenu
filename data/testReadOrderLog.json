@@ -1,0 +1,21 @@
+{
+  "name" : "a",
+  "orders" : [
+    {
+      "drinks" : []
+    },
+    {
+      "drinks" : [
+        {
+          "name" : "classic milk tea",
+          "price" : 5.0,
+          "ingredients" : [],
+          "toppings" : [],
+          "ice" : 1,
+          "sugar" : 1,
+          "special" : false
+        }
+      ]
+    }
+  ]
+}

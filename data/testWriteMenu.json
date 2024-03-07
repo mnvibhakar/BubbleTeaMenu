@@ -1,0 +1,10 @@
+{"drinks": [{
+    "special": false,
+    "size": 0,
+    "price": 1,
+    "name": "a",
+    "ingredients": [],
+    "toppings": [],
+    "ice": 0,
+    "sugar": 0
+}]}

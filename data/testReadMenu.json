@@ -1,0 +1,24 @@
+{
+  "drinks" : [
+    {
+      "name" : "classic milk tea",
+      "special" : false,
+      "size" : 0,
+      "price" : 5,
+      "ingredients" : [],
+      "toppings" :[],
+      "ice" : 0,
+      "sugar" : 0
+    },
+    {
+      "name" : "matcha latte",
+      "special" : false,
+      "size" : 0,
+      "price" : 5,
+      "ingredients" : [],
+      "toppings" : [],
+      "ice" : 0,
+      "sugar" : 0
+    }
+  ]
+}
