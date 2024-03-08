@@ -26,5 +26,41 @@
         "toppings": [],
         "ice": 0,
         "sugar": 0
+    },
+    {
+        "special": false,
+        "size": 0,
+        "price": 6.5,
+        "name": "mango fruit tea",
+        "ingredients": [
+            {
+                "amount": 350,
+                "name": "green",
+                "type": "tea base"
+            },
+            {
+                "amount": 1,
+                "name": "mango syrup",
+                "type": "fruit syrup"
+            },
+            {
+                "amount": 2,
+                "name": "mango",
+                "type": "fruit"
+            },
+            {
+                "amount": 1,
+                "name": "lemon",
+                "type": "fruit"
+            },
+            {
+                "amount": 2,
+                "name": "lime",
+                "type": "fruit"
+            }
+        ],
+        "toppings": [],
+        "ice": 0,
+        "sugar": 0
     }
 ]}

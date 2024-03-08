@@ -1,4 +1,39 @@
 {
     "name": "it's working!",
-    "orders": []
+    "orders": [{"drinks": [{
+        "special": false,
+        "size": 108,
+        "price": 7,
+        "name": "mango fruit tea",
+        "ingredients": [
+            {
+                "amount": 450,
+                "name": "green",
+                "type": "tea base"
+            },
+            {
+                "amount": 1,
+                "name": "mango syrup",
+                "type": "fruit syrup"
+            },
+            {
+                "amount": 3,
+                "name": "mango",
+                "type": "fruit"
+            },
+            {
+                "amount": 2,
+                "name": "lemon",
+                "type": "fruit"
+            },
+            {
+                "amount": 3,
+                "name": "lime",
+                "type": "fruit"
+            }
+        ],
+        "toppings": [{"name": "coconut jelly"}],
+        "ice": 0.5,
+        "sugar": 0.25
+    }]}]
 }
