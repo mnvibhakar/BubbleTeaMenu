@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class TestJsonWriter {
 
     private Drink drink;
+    private ArrayList<String> toppings;
     private ArrayList<Ingredient> ingredients;
     private Ingredient ingredient;
     private Order order;
@@ -25,11 +26,15 @@ public class TestJsonWriter {
 
     @BeforeEach
     void setup() {
+        toppings = new ArrayList<>();
+        toppings.add("pearls");
         ingredients = new ArrayList<>();
         ingredient = new Ingredient("", "", 100);
         ingredients.add(ingredient);
         drink = new Drink("a", 1.0, ingredients, false);
+        drink.updateDrink("s", toppings, 1, 1);
         order = new Order();
+        order.addDrink(drink);
         orderLog = new OrderLog("a");
         orderLogList = new OrderLogList();
         menu = new Menu();
