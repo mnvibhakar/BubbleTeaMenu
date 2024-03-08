@@ -66,6 +66,7 @@ public class Order implements Writable {
         totalPrice = p;
     }
 
+    //Effects: converts the order to a JSONObject and returns it
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
@@ -73,6 +74,7 @@ public class Order implements Writable {
         return json;
     }
 
+    //Effects: converts drinks to a JSONArray and returns it
     private JSONArray drinksToJson() {
         JSONArray jsonArray = new JSONArray();
         for (Drink d : drinksOrdered) {

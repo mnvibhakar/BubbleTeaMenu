@@ -30,6 +30,7 @@ public class Ingredient implements Writable {
         }
     }
 
+    //Effects: converts the ingredient to a jsonObject and returns it
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

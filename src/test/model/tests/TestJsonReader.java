@@ -4,7 +4,6 @@ import model.Menu;
 import model.OrderLog;
 import model.OrderLogList;
 import model.persistence.JsonReader;
-import org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -75,7 +74,7 @@ public class TestJsonReader {
         JsonReader reader = new JsonReader("./data/testReadEmptyOrderLogList.json");
         try {
             OrderLogList orderLogList = reader.readOrderLogList();
-            assertEquals(0, orderLogList.getOrderLogs().size());
+            assertEquals(0, orderLogList.getOrderLogList().size());
         } catch (IOException e) {
             fail();
         }
@@ -109,7 +108,7 @@ public class TestJsonReader {
         JsonReader reader = new JsonReader("./data/testReadOrderLogList.json");
         try {
             OrderLogList orderLogList = reader.readOrderLogList();
-            assertEquals(2, orderLogList.getOrderLogs().size());
+            assertEquals(2, orderLogList.getOrderLogList().size());
         } catch (IOException e) {
             fail();
         }

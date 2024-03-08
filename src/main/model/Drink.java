@@ -34,6 +34,8 @@ public class Drink implements Writable {
         isSpecial = s;
     }
 
+    //Modifies: ingredients
+    //Effects: updates the amounts of the given ingredients based on the size, ice, and toppings of the drink
     public void updateIngredients() {
         if (size == 'l') {
             for (Ingredient i : ingredients) {
@@ -74,6 +76,7 @@ public class Drink implements Writable {
         toppings.addAll(exTop);
     }
 
+    //Effects: converts the drink to a JSONObject and returns it
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
@@ -148,14 +151,6 @@ public class Drink implements Writable {
 
     public ArrayList<String> getToppings() {
         return this.toppings;
-    }
-
-    public double getIce() {
-        return this.ice;
-    }
-
-    public double getSugar() {
-        return this.sugar;
     }
 
     public boolean getIsSpecial() {

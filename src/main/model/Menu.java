@@ -43,6 +43,8 @@ public class Menu implements Writable {
         return null;
     }
 
+    //Modifies: drinks
+    //Effects: changes the special status of the drinks based on the given drink names
     public void setSpecials(String s1, String s2) {
         for (Drink drink : drinks) {
             if (drink.getName().equals(s1) || drink.getName().equals(s2)) {
@@ -57,6 +59,7 @@ public class Menu implements Writable {
         return drinks;
     }
 
+    //Effects: converts the menu to a JSONObject and returns it
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
@@ -64,6 +67,7 @@ public class Menu implements Writable {
         return json;
     }
 
+    //Effects: converts drinks to a JSONArray and returns it
     private JSONArray drinksToJson() {
         JSONArray jsonArray = new JSONArray();
         for (Drink d : drinks) {

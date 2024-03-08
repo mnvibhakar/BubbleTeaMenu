@@ -8,6 +8,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.*;
 
+/*
+represents a class that takes objects and writes them to a json file
+uses code from the CPSC 210 Json Serialization Demo project
+ */
 public class JsonWriter {
 
     private static final int TAB = 4;

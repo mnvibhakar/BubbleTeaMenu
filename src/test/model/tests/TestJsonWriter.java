@@ -6,7 +6,6 @@ import model.persistence.JsonReader;
 import model.persistence.JsonWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ public class TestJsonWriter {
 
     private Drink drink;
     private ArrayList<Ingredient> ingredients;
+    private Ingredient ingredient;
     private Order order;
     private OrderLog orderLog;
     private OrderLogList orderLogList;
@@ -26,6 +26,8 @@ public class TestJsonWriter {
     @BeforeEach
     void setup() {
         ingredients = new ArrayList<>();
+        ingredient = new Ingredient("", "", 100);
+        ingredients.add(ingredient);
         drink = new Drink("a", 1.0, ingredients, false);
         order = new Order();
         orderLog = new OrderLog("a");
@@ -124,7 +126,7 @@ public class TestJsonWriter {
 
             JsonReader reader = new JsonReader("./data/testWriteEmptyOrderLoglist.json");
             orderLogList = reader.readOrderLogList();
-            assertEquals(0, orderLogList.getOrderLogs().size());
+            assertEquals(0, orderLogList.getOrderLogList().size());
         } catch (IOException e) {
             fail();
         }
@@ -141,7 +143,7 @@ public class TestJsonWriter {
 
             JsonReader reader = new JsonReader("./data/testWriteOrderLoglist.json");
             orderLogList = reader.readOrderLogList();
-            assertEquals(1, orderLogList.getOrderLogs().size());
+            assertEquals(1, orderLogList.getOrderLogList().size());
         } catch (IOException e) {
             fail();
         }

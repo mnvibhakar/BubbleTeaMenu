@@ -110,6 +110,7 @@ public class MenuApp {
         }
     }
 
+    //Effects: displays options for manager actions and reads user input
     private void doManagerActions() {
         boolean keepGoing = true;
         String managerCommand;
@@ -133,6 +134,7 @@ public class MenuApp {
 
     }
 
+    //Effects: processes user input and executes chosen action
     private void processManagerCommand(String managerCommand) {
         if (managerCommand.equals("v")) {
             viewStats();
@@ -147,6 +149,7 @@ public class MenuApp {
         }
     }
 
+    //Effects: opens the menu by reading it from the json file
     private void openMenu() {
         try {
             menu = menuReader.readMenu();
@@ -155,6 +158,7 @@ public class MenuApp {
         }
     }
 
+    //Effects: Saves the menu to the selected json file
     private void saveMenu() {
         try {
             menuWriter.open();
@@ -245,49 +249,83 @@ public class MenuApp {
         orderLog.addOrder(currentOrder);
     }
 
+    //Effects: opens the order log by reading it from the json file
+    private void openOrderLog() {
+        try {
+            orderLogList = orderLogListReader.readOrderLogList();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //Effects: Selects an orderLog from the orderLogList by prompting user input for the name
+    private OrderLog selectOrderLog() {
+        for (OrderLog o : orderLogList.getOrderLogList()) {
+            System.out.println(o.getName());
+        }
+        String selectedOrderLogName = input.next().toLowerCase();
+        OrderLog selectedOrderLog = null;
+        for (OrderLog o : orderLogList.getOrderLogList()) {
+            if (o.getName().equals(selectedOrderLogName)) {
+                selectedOrderLog = o;
+            }
+        }
+        return selectedOrderLog;
+    }
+
     //Effects: Displays the options for stats, reads user input, and selects the corresponding stat action
     private void viewStats() {
+        System.out.println("which order log would you like stats for?");
+        openOrderLog();
+        OrderLog selectedOrderLog = selectOrderLog();
         System.out.println("\nWhich stat would you like to view?");
         System.out.println("\ti -> ingredients");
         System.out.println("\tp -> price");
         String selectedOption = input.next().toLowerCase();
         if (selectedOption.equals("i")) {
-            displayIngredientStats();
+            displayIngredientStats(selectedOrderLog);
         } else if (selectedOption.equals("p")) {
-            displayPriceStats();
+            displayPriceStats(selectedOrderLog);
         } else {
             System.out.println("Selection not valid");
         }
     }
 
     //Effects: displays stats about the price of all orders in orderLog
-    private void displayPriceStats() {
-        int numDrinksOrdered = 0;
-        double totalPriceAllDrinks = 0;
-        for (Order order: orderLog.getOrders()) {
-            numDrinksOrdered += order.getDrinksOrdered().size();
-            totalPriceAllDrinks += order.getTotalPrice();
+    private void displayPriceStats(OrderLog o) {
+        if (o == null) {
+            System.out.println("Order Log not found");
+        } else {
+            int numDrinksOrdered = 0;
+            double totalPriceAllDrinks = 0;
+            for (Order order: o.getOrders()) {
+                numDrinksOrdered += order.getDrinksOrdered().size();
+                totalPriceAllDrinks += order.getTotalPrice();
+            }
+            double averageOrderPrice = totalPriceAllDrinks / o.getOrders().size();
+            System.out.println("\nNumber of Drinks Ordered:");
+            System.out.println(numDrinksOrdered);
+            System.out.println("\nTotal Revenue:");
+            System.out.println(totalPriceAllDrinks);
+            System.out.println("\nAverage Price per Order:");
+            System.out.println(averageOrderPrice);
         }
-        double averageOrderPrice = totalPriceAllDrinks / orderLog.getOrders().size();
-        System.out.println("\nNumber of Drinks Ordered:");
-        System.out.println(numDrinksOrdered);
-        System.out.println("\nTotal Revenue:");
-        System.out.println(totalPriceAllDrinks);
-        System.out.println("\nAverage Price per Order:");
-        System.out.println(averageOrderPrice);
     }
 
     //Effects: Displays stats about the ingredients of all orders in orderLog
-    private void displayIngredientStats() {
-        System.out.println("\nWhat ingredient would you like to view?");
-        String ingredient = input.next().toLowerCase();
-        int ingredientAmount = 0;
-        for (Order order : orderLog.getOrders()) {
-            ingredientAmount += order.getIngredientAmount(ingredient);
+    private void displayIngredientStats(OrderLog o) {
+        if (o == null) {
+            System.out.println("Order Log not found");
+        } else {
+            System.out.println("\nWhat ingredient would you like to view?");
+            String ingredient = input.next().toLowerCase();
+            int ingredientAmount = 0;
+            for (Order order : o.getOrders()) {
+                ingredientAmount += order.getIngredientAmount(ingredient);
+            }
+            System.out.println("\nAmount used:");
+            System.out.println(ingredientAmount);
         }
-        System.out.println("\nAmount used:");
-        System.out.println(ingredientAmount);
-
     }
 
     //Effects: Changes what drinks are on special
@@ -302,6 +340,7 @@ public class MenuApp {
         saveMenu();
     }
 
+    //Effects: prompts the user to select specifications to add a new drink to the menu
     private void addDrinkToMenu() {
         openMenu();
         System.out.println("\nDrink Name?");
@@ -320,6 +359,7 @@ public class MenuApp {
         saveMenu();
     }
 
+    //Effects: prompts user to select ingredients to add to the list
     private void chooseIngredients(ArrayList<Ingredient> ingredients) {
         boolean keepGoing = true;
         while (keepGoing) {
@@ -338,10 +378,9 @@ public class MenuApp {
                 keepGoing = false;
             }
         }
-
-
     }
 
+    //Effects: saves the order log to the json file and creates a new one
     private void startNewOrderLog() {
         try {
             orderLogList = orderLogListReader.readOrderLogList();
@@ -367,9 +406,11 @@ public class MenuApp {
         }
     }
 
+    //Effects: return true if the given name has already been used by
+    // the current order log or one in the list
     private boolean checkName(String name) {
         Boolean nameNotAlreadyUsed = true;
-        for (OrderLog o : orderLogList.getOrderLogs()) {
+        for (OrderLog o : orderLogList.getOrderLogList()) {
             if (o.getName().equals(name)) {
                 nameNotAlreadyUsed = false;
             }

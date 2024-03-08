@@ -30,6 +30,11 @@ public class DrinkTest {
     }
 
     @Test
+    void testGetIngredientAmountNotInDrink() {
+        assertEquals(0, drink.getIngredientAmount("d"));
+    }
+
+    @Test
     void testUpdateDrinkNormal() {
         drink.updateDrink("s", noToppings, 1, 1);
         assertEquals('s', drink.getSize());
@@ -99,5 +104,11 @@ public class DrinkTest {
         assertEquals(450, drink.getIngredientAmount("a"));
         assertEquals(1, drink.getIngredientAmount("b"));
         assertEquals(40, drink.getIngredientAmount("c"));
+    }
+
+    @Test
+    void testAddIngredient() {
+        drink.addIngredient("tea base", "a", 200);
+        assertEquals(4, drink.getIngredients().size());
     }
 }

@@ -7,22 +7,23 @@ import java.util.ArrayList;
 
 public class OrderLogList {
 
-    private ArrayList<OrderLog> orderLogs;
+    private ArrayList<OrderLog> orderLogList;
 
     public OrderLogList() {
-        orderLogs  = new ArrayList<>();
+        orderLogList = new ArrayList<>();
     }
 
     public void addOrderLog(OrderLog orderLog) {
-        orderLogs.add(orderLog);
+        orderLogList.add(orderLog);
     }
 
-    public ArrayList<OrderLog> getOrderLogs() {
-        return orderLogs;
+    public ArrayList<OrderLog> getOrderLogList() {
+        return orderLogList;
     }
 
+    //Effects: returns the orderLog from the orderLogList with the given name
     public OrderLog findOrderLog(String n) {
-        for (OrderLog o : orderLogs) {
+        for (OrderLog o : orderLogList) {
             if (o.getName().equals(n)) {
                 return o;
             }
@@ -30,15 +31,17 @@ public class OrderLogList {
         return null;
     }
 
+    //Effects: converts the OrderLogList to a JSONObject and returns it
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("order logs", orderLogsToJson());
         return json;
     }
 
+    //Effects: converts the orderLogList to a JSONArray and returns it
     private JSONArray orderLogsToJson() {
         JSONArray jsonArray = new JSONArray();
-        for (OrderLog o : orderLogs) {
+        for (OrderLog o : orderLogList) {
             jsonArray.put(o.toJson());
         }
         return jsonArray;

@@ -1,1 +1,52 @@
-{"order logs": []}
+{"order logs": [
+    {
+        "name": "march 7",
+        "orders": [{"drinks": [{
+            "special": false,
+            "size": 0,
+            "price": 5,
+            "name": "classic milk tea",
+            "ingredients": [{
+                "amount": 400,
+                "name": "classic",
+                "type": "tea base"
+            }],
+            "toppings": [],
+            "ice": 0,
+            "sugar": 0
+        }]}]
+    },
+    {
+        "name": "test",
+        "orders": [
+            {"drinks": [{
+                "special": true,
+                "size": 108,
+                "price": 5.7,
+                "name": "matcha latte",
+                "ingredients": [{
+                    "amount": 450,
+                    "name": "matcha",
+                    "type": "tea base"
+                }],
+                "toppings": [{"name": "pearls"}],
+                "ice": 1,
+                "sugar": 1
+            }]},
+            {"drinks": [{
+                "special": false,
+                "size": 108,
+                "price": 5.5,
+                "name": "classic milk tea",
+                "ingredients": [{
+                    "amount": 500,
+                    "name": "classic",
+                    "type": "tea base"
+                }],
+                "toppings": [],
+                "ice": 1,
+                "sugar": 1
+            }]}
+        ]
+    }
+]}

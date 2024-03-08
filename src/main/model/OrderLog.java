@@ -21,6 +21,7 @@ public class OrderLog implements Writable {
         orders.add(o);
     }
 
+    //Effects: converts the orderLog to a JSONObject and returns it
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();

@@ -26,9 +26,9 @@ public class OrderLogListTest {
     @Test
     void testAddOrderLog() {
         orderLogList.addOrderLog(orderLog1);
-        assertEquals(1, orderLogList.getOrderLogs().size());
+        assertEquals(1, orderLogList.getOrderLogList().size());
         orderLogList.addOrderLog(orderLog2);
-        assertEquals(2, orderLogList.getOrderLogs().size());
+        assertEquals(2, orderLogList.getOrderLogList().size());
     }
 
     @Test
