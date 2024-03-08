@@ -75,7 +75,7 @@ public class Order implements Writable {
     }
 
     //Effects: converts drinks to a JSONArray and returns it
-    private JSONArray drinksToJson() {
+    public JSONArray drinksToJson() {
         JSONArray jsonArray = new JSONArray();
         for (Drink d : drinksOrdered) {
             jsonArray.put(d.toJson());
