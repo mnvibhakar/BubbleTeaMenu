@@ -3,6 +3,7 @@ package model.tests;
 import model.Menu;
 import model.OrderLog;
 import model.OrderLogList;
+import model.exceptions.DuplicateNameException;
 import model.persistence.JsonReader;
 import org.junit.jupiter.api.Test;
 
@@ -88,6 +89,19 @@ public class TestJsonReader {
             assertEquals(2, menu.getDrinks().size());
         } catch (IOException e) {
             fail();
+        }
+    }
+
+    @Test
+    void testReadMenuDuplicateDrink() {
+        JsonReader reader = new JsonReader("./data/testReadMenuDuplicateDrink.json");
+        try {
+            Menu menu = reader.readMenu();
+            fail();
+        } catch (IOException e) {
+            fail();
+        } catch (Error e) {
+            //pass
         }
     }
 

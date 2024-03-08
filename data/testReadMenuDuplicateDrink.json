@@ -1,0 +1,28 @@
+{"drinks": [{
+  "special": false,
+  "size": 115,
+  "price": 1.5,
+  "name": "a",
+  "ingredients": [{
+    "amount": 100,
+    "name": "",
+    "type": ""
+  }],
+  "toppings": [{"name": "pearls"}],
+  "ice": 1,
+  "sugar": 1
+},
+  {
+    "special": false,
+    "size": 115,
+    "price": 1.5,
+    "name": "a",
+    "ingredients": [{
+      "amount": 100,
+      "name": "",
+      "type": ""
+    }],
+    "toppings": [{"name": "pearls"}],
+    "ice": 1,
+    "sugar": 1
+  }]}
