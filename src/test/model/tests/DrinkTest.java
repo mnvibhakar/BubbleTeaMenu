@@ -14,6 +14,7 @@ public class DrinkTest {
     private Ingredient ingredient1 = new Ingredient("tea base", "a", 400);
     private Ingredient ingredient2 = new Ingredient("fruit", "b", 1);
     private Ingredient ingredient3 = new Ingredient("milk", "c", 40);
+    private Ingredient ingredient4 = new Ingredient("none", "d", 1);
     private ArrayList<Ingredient> ingredients;
     private ArrayList<String> toppings;
     private  ArrayList<String> noToppings;
@@ -22,7 +23,7 @@ public class DrinkTest {
     @BeforeEach
     void setup() {
         ingredients = new ArrayList<>();
-        Collections.addAll(ingredients, ingredient1, ingredient2, ingredient3);
+        Collections.addAll(ingredients, ingredient1, ingredient2, ingredient3, ingredient4);
         drink = new Drink("d", 5.0, ingredients, false);
         toppings = new ArrayList<>();
         toppings.add("");
@@ -31,7 +32,7 @@ public class DrinkTest {
 
     @Test
     void testGetIngredientAmountNotInDrink() {
-        assertEquals(0, drink.getIngredientAmount("d"));
+        assertEquals(0, drink.getIngredientAmount("e"));
     }
 
     @Test
@@ -77,6 +78,7 @@ public class DrinkTest {
         assertEquals(400, drink.getIngredientAmount("a"));
         assertEquals(1, drink.getIngredientAmount("b"));
         assertEquals(40, drink.getIngredientAmount("c"));
+        assertEquals(1,drink.getIngredientAmount("d"));
     }
 
     @Test
@@ -86,6 +88,7 @@ public class DrinkTest {
         assertEquals(500, drink.getIngredientAmount("a"));
         assertEquals(2, drink.getIngredientAmount("b"));
         assertEquals(60, drink.getIngredientAmount("c"));
+        assertEquals(1,drink.getIngredientAmount("d"));
     }
 
     @Test
@@ -95,6 +98,7 @@ public class DrinkTest {
         assertEquals(350, drink.getIngredientAmount("a"));
         assertEquals(1, drink.getIngredientAmount("b"));
         assertEquals(40, drink.getIngredientAmount("c"));
+        assertEquals(1,drink.getIngredientAmount("d"));
     }
 
     @Test
@@ -104,11 +108,12 @@ public class DrinkTest {
         assertEquals(450, drink.getIngredientAmount("a"));
         assertEquals(1, drink.getIngredientAmount("b"));
         assertEquals(40, drink.getIngredientAmount("c"));
+        assertEquals(1,drink.getIngredientAmount("d"));
     }
 
     @Test
     void testAddIngredient() {
         drink.addIngredient("tea base", "a", 200);
-        assertEquals(4, drink.getIngredients().size());
+        assertEquals(5, drink.getIngredients().size());
     }
 }
