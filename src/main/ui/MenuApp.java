@@ -250,7 +250,7 @@ public class MenuApp {
     }
 
     //Effects: opens the order log by reading it from the json file
-    private void openOrderLog() {
+    private void openOrderLogList() {
         try {
             orderLogList = orderLogListReader.readOrderLogList();
         } catch (IOException e) {
@@ -276,8 +276,16 @@ public class MenuApp {
     //Effects: Displays the options for stats, reads user input, and selects the corresponding stat action
     private void viewStats() {
         System.out.println("which order log would you like stats for?");
-        openOrderLog();
-        OrderLog selectedOrderLog = selectOrderLog();
+        System.out.println("\nc -> Current Order Log");
+        System.out.println("\nl -> load from memory");
+        String response = input.next().toLowerCase();
+        OrderLog selectedOrderLog = new OrderLog("");
+        if (response.equals("c")) {
+            selectedOrderLog = orderLog;
+        } else if (response.equals("l")) {
+            openOrderLogList();
+            selectedOrderLog = selectOrderLog();
+        }
         System.out.println("\nWhich stat would you like to view?");
         System.out.println("\ti -> ingredients");
         System.out.println("\tp -> price");
