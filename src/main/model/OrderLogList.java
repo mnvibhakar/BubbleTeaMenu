@@ -5,6 +5,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/*
+represents a list of all orderLogs
+ */
 public class OrderLogList {
 
     private ArrayList<OrderLog> orderLogList;

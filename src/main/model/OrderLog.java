@@ -6,6 +6,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/*
+represents a list of all orders from a period, with a name describing the period
+ */
 public class OrderLog implements Writable {
 
     private String name;
