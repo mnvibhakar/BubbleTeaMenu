@@ -2,9 +2,11 @@ package ui;
 
 import model.*;
 
+import model.Menu;
 import model.exceptions.DuplicateNameException;
 import model.persistence.JsonWriter;
 import model.persistence.JsonReader;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ public class MenuApp {
     private static final String MENU_JSON_STORE = "./data/menu.json";
     private static final String ORDERLOGLIST_JSON_STORE = "./data/orderLogList.json";
     private static final String ORDERLOG_JSON_STORE = "./data/orderLog.json";
+    private static final int WIDTH = 1000;
+    private static final int HEIGHT = 600;
 
     private Menu menu = new Menu();
     private OrderLog orderLog;
@@ -40,7 +44,31 @@ public class MenuApp {
         runMenu();
     }
 
-    //Effects: Runs the app
+    //Effects: Initializes order log and input scanner
+    //Modifies: orderLog, input
+    private void init() {
+        input = new Scanner(System.in);
+        input.useDelimiter("\n");
+        initJsonHandling();
+    }
+
+    public void initJsonHandling() {
+        menuWriter = new JsonWriter(MENU_JSON_STORE);
+        menuReader = new JsonReader(MENU_JSON_STORE);
+        orderLogListWriter = new JsonWriter(ORDERLOGLIST_JSON_STORE);
+        orderLogListReader = new JsonReader(ORDERLOGLIST_JSON_STORE);
+        orderLogWriter = new JsonWriter(ORDERLOG_JSON_STORE);
+        orderLogReader = new JsonReader(ORDERLOG_JSON_STORE);
+        try {
+            orderLog = orderLogReader.readOrderLog();
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + ORDERLOG_JSON_STORE);
+        }
+    }
+
+
+
+ //Effects: Runs the app
     private void runMenu() {
         boolean keepGoing = true;
         String command;
@@ -64,24 +92,6 @@ public class MenuApp {
         } catch (FileNotFoundException e) {
             System.out.println("Could not write to file " + ORDERLOG_JSON_STORE);
         }
-    }
-
-    //Effects: Initializes order log and input scanner
-    //Modifies: orderLog, input
-    private void init() {
-        menuWriter = new JsonWriter(MENU_JSON_STORE);
-        menuReader = new JsonReader(MENU_JSON_STORE);
-        orderLogListWriter = new JsonWriter(ORDERLOGLIST_JSON_STORE);
-        orderLogListReader = new JsonReader(ORDERLOGLIST_JSON_STORE);
-        orderLogWriter = new JsonWriter(ORDERLOG_JSON_STORE);
-        orderLogReader = new JsonReader(ORDERLOG_JSON_STORE);
-        try {
-            orderLog = orderLogReader.readOrderLog();
-        } catch (IOException e) {
-            System.out.println("Unable to read from file: " + ORDERLOG_JSON_STORE);
-        }
-        input = new Scanner(System.in);
-        input.useDelimiter("\n");
     }
 
     //Effects: displays the base options for the app
@@ -425,4 +435,5 @@ public class MenuApp {
         }
         return (nameNotAlreadyUsed && !orderLog.getName().equals(name));
     }
+
 }
