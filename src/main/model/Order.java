@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /*
 Represents an order, with a list of drinks that have been ordered, and records the total price
@@ -14,6 +15,8 @@ public class Order implements Writable {
     private static final double TAX_RATE = 0.08; //The sales tax rate applied to final orders
     private double totalPrice;                   // The total of price of all drinks in the order
     private ArrayList<Drink> drinksOrdered;      // A list of all drinks in the order
+    private Calendar timeStamp;
+    private int orderNumber;
 
     // Effects: Creates new order
     public Order() {
@@ -36,6 +39,7 @@ public class Order implements Writable {
         drink.updateDrink(size, exTop, ice, sugar);
         drink.updateIngredients();
         addDrink(drink);
+        timeStamp = Calendar.getInstance();
     }
 
 
