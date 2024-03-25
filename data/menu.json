@@ -1,6 +1,6 @@
 {"drinks": [
     {
-        "special": false,
+        "special": true,
         "size": 0,
         "price": 5,
         "name": "classic milk tea",
@@ -30,7 +30,7 @@
     {
         "special": false,
         "size": 0,
-        "price": 6.5,
+        "price": 6,
         "name": "mango fruit tea",
         "ingredients": [
             {
@@ -57,6 +57,41 @@
                 "amount": 2,
                 "name": "lime",
                 "type": "fruit"
+            }
+        ],
+        "toppings": [],
+        "ice": 0,
+        "sugar": 0
+    },
+    {
+        "special": false,
+        "size": 0,
+        "price": 5,
+        "name": "strawberry milk tea",
+        "ingredients": [{
+            "amount": 400,
+            "name": "strawberry milk tea",
+            "type": "tea base"
+        }],
+        "toppings": [],
+        "ice": 0,
+        "sugar": 0
+    },
+    {
+        "special": true,
+        "size": 0,
+        "price": 6,
+        "name": "classic yogurt tea",
+        "ingredients": [
+            {
+                "amount": 300,
+                "name": "green",
+                "type": "tea base"
+            },
+            {
+                "amount": 60,
+                "name": "milk",
+                "type": "yogurt"
             }
         ],
         "toppings": [],
