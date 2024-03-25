@@ -3,16 +3,20 @@ package ui;
 import model.*;
 
 import model.Menu;
+import model.exceptions.DuplicateNameException;
 import model.persistence.JsonWriter;
 import model.persistence.JsonReader;
 
 import javax.swing.*;
+import javax.swing.text.View;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
+import java.util.ArrayList;
 
 /*
 Represents the menu app, processes user input to execute the chosen tasks, including:
@@ -22,7 +26,7 @@ Represents the menu app, processes user input to execute the chosen tasks, inclu
  */
 public class MenuAppGUI extends JFrame {
 
-    private final int managerPasscode = 1234;
+    private final String managerPasscode = "1234";
     private static final String MENU_JSON_STORE = "./data/menu.json";
     private static final String ORDERLOGLIST_JSON_STORE = "./data/orderLogList.json";
     private static final String ORDERLOG_JSON_STORE = "./data/orderLog.json";
@@ -30,14 +34,10 @@ public class MenuAppGUI extends JFrame {
     private static final int HEIGHT = 600;
 
     private Menu menu = new Menu();
+    private Drink currentDrink;
     private OrderLog orderLog;
     private OrderLogList orderLogList;
 
-    private JComboBox<String> printCombo;
-    private JDesktopPane desktop;
-    private JInternalFrame controlPanel;
-
-    private Scanner input;
     private JsonWriter menuWriter;
     private JsonWriter orderLogListWriter;
     private JsonWriter orderLogWriter;
@@ -45,22 +45,17 @@ public class MenuAppGUI extends JFrame {
     private JsonReader orderLogListReader;
     private JsonReader orderLogReader;
 
+    private JPanel homePanel;
+    private JPanel managerPanel;
+    private JPanel ordersPanel;
+
     public static void main(String[] args) {
-        new MenuApp();
+        new MenuAppGUI();
     }
 
     public MenuAppGUI() {
-        init();
-        //runMenu();
-    }
-
-    //Effects: Initializes order log and input scanner
-    //Modifies: orderLog, input
-    private void init() {
-        input = new Scanner(System.in);
-        input.useDelimiter("\n");
         initJsonHandling();
-        initUI();
+        initGUI();
     }
 
     public void initJsonHandling() {
@@ -73,29 +68,48 @@ public class MenuAppGUI extends JFrame {
         try {
             orderLog = orderLogReader.readOrderLog();
         } catch (IOException e) {
-            System.out.println("Unable to read from file: " + ORDERLOG_JSON_STORE);
+            JOptionPane.showMessageDialog(null,
+                    "Unable to read from file: " + ORDERLOG_JSON_STORE, "ORDERLOG",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public void initUI() {
-        desktop = new JDesktopPane();
-        desktop.addMouseListener(new DesktopFocusAction());
-        controlPanel = new JInternalFrame("Control Panel", false, false, false, false);
-        controlPanel.setLayout(new BorderLayout());
+    public void initGUI() {
+        homePanel = new HomePanel();
+        ordersPanel = new OrdersPanel();
+        managerPanel = new ManagerPanel();
 
-        setContentPane(desktop);
         setTitle("Bubble Tea Menu");
         setSize(WIDTH, HEIGHT);
+        addMenuBar();
 
-        addBaseButtonPanel();
-
-        controlPanel.pack();
-        controlPanel.setVisible(true);
-        desktop.add(controlPanel);
-
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        centreOnScreen();
+        setContentPane(homePanel);
         setVisible(true);
+    }
+
+    protected void processWindowEvent(WindowEvent e) {
+        super.processWindowEvent(e);
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            try {
+                orderLogWriter.open();
+                orderLogWriter.writeOrderLog(orderLog);
+                orderLogWriter.close();
+            } catch (FileNotFoundException exception) {
+                JOptionPane.showMessageDialog(null,
+                        "Could not write to file " + ORDERLOG_JSON_STORE, "ORDERLOG",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+            System.exit(0);
+        }
+    }
+
+    private void addMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add(new JMenuItem(new GoToHomeAction()));
+        menuBar.add(new JMenuItem(new GoToMenuAction()));
+        menuBar.add(new JMenuItem(new GoToOrdersAction()));
+        menuBar.add(new JMenuItem(new GoToManagerAction()));
+        setJMenuBar(menuBar);
     }
 
     private void centreOnScreen() {
@@ -104,42 +118,74 @@ public class MenuAppGUI extends JFrame {
         setLocation((width - getWidth()) / 2, (height - getHeight()) / 2);
     }
 
-    private void addBaseButtonPanel() {
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(4,2));
-        buttonPanel.add(new JButton(new EmployeeAction()));
-        buttonPanel.add(new JButton(new ManagerAction()));
-
-        controlPanel.add(buttonPanel, BorderLayout.WEST);
+    private void switchPanel(JPanel panel) {
+        setContentPane(panel);
+        repaint();
+        revalidate();
     }
 
-    private class EmployeeAction extends AbstractAction {
-        EmployeeAction() {
-            super("Register");
+    //Effects: opens the menu by reading it from the json file
+    private void openMenu() {
+        try {
+            menu = menuReader.readMenu();
+        } catch (IOException e) {
+            System.out.println("Unable to read from file " + MENU_JSON_STORE);
+        }
+    }
+
+    //Effects: Saves the menu to the selected json file
+    private void saveMenu() {
+        try {
+            menuWriter.open();
+            menuWriter.writeMenu(menu);
+            menuWriter.close();
+            System.out.println("Saved new menu to " + MENU_JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file " + MENU_JSON_STORE);
+        }
+    }
+
+    private class HomePanel extends JPanel {
+        HomePanel() {
+        }
+    }
+
+    private class MenuPanel extends JPanel {
+        MenuPanel() {
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            openMenu();
+            for (Drink d : menu.getDrinks()) {
+                currentDrink = d;
+                add(new JButton(new OrderDrinkAction()));
+            }
+            currentDrink = null;
+        }
+    }
+
+    private class OrdersPanel extends JPanel {
+        OrdersPanel() {
+
+        }
+    }
+
+    private class ManagerPanel extends JPanel {
+        ManagerPanel() {
+            add(new JButton(new AddDrinkToMenuAction()));
+            add(new JButton((new SetNewSpecialsAction())));
+            add(new JButton(new ViewStatsAction()));
+            add(new JButton(new StartNewOrderLogAction()));
+        }
+    }
+
+    private class GoToHomeAction extends AbstractAction {
+        GoToHomeAction() {
+            super("home");
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            displayRegister();
+            switchPanel(homePanel);
         }
-    }
-
-    private void displayRegister() {
-
-    }
-
-    private class ManagerAction extends AbstractAction {
-        ManagerAction() {
-            super("Manager");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            displayManagerMenu();
-        }
-    }
-
-    private void displayManagerMenu() {
     }
 
     private class DesktopFocusAction extends MouseAdapter {
@@ -148,6 +194,185 @@ public class MenuAppGUI extends JFrame {
             MenuAppGUI.this.requestFocusInWindow();
         }
     }
+
+    private class GoToMenuAction extends AbstractAction {
+        GoToMenuAction() {
+            super("Menu");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            switchPanel(new MenuPanel());
+        }
+    }
+
+    private class GoToManagerAction extends AbstractAction {
+        GoToManagerAction() {
+            super("Manager Actions");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String inputCode = JOptionPane.showInputDialog(null,
+                    "passcode?",
+                    "Enter code",
+                    JOptionPane.QUESTION_MESSAGE);
+            if (inputCode.equals(managerPasscode)) {
+                switchPanel(managerPanel);
+            }
+        }
+    }
+
+    private class GoToOrdersAction extends AbstractAction {
+        GoToOrdersAction() {
+            super("Orders");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            switchPanel(ordersPanel);
+        }
+    }
+
+    private class OrderDrinkAction extends AbstractAction {
+        OrderDrinkAction() {
+            super(currentDrink.getName());
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
+    private class AddDrinkToMenuAction extends AbstractAction {
+        AddDrinkToMenuAction() {
+            super("Add New Drink");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String drinkName = JOptionPane.showInputDialog(null,
+                    "Name of Drink", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+            double price = Double.valueOf(JOptionPane.showInputDialog(null,
+                    "Price of Drink?", JOptionPane.QUESTION_MESSAGE));
+            openMenu();
+            ArrayList<Ingredient> ingredients;
+            ingredients = new ArrayList<>();
+            chooseIngredients(ingredients);
+            Drink newDrink = new Drink(drinkName, price, ingredients, false);
+            openMenu();
+            try {
+                menu.addDrink(newDrink);
+            } catch (DuplicateNameException exception) {
+                JOptionPane.showMessageDialog(null, exception.getMessage(),
+                        "Menu", JOptionPane.ERROR_MESSAGE);
+            }
+            saveMenu();
+            JOptionPane.showMessageDialog(null, "Drink added to menu!");
+        }
+
+        private void chooseIngredients(ArrayList<Ingredient> ingredients) {
+            boolean keepGoing = true;
+            while (keepGoing) {
+                int addIngredient = JOptionPane.showConfirmDialog(null, "Add Ingredient?");
+                if (addIngredient == JOptionPane.YES_OPTION) {
+                    String type = JOptionPane.showInputDialog(null,
+                            "Type of Ingredient?", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+                    String name = JOptionPane.showInputDialog(null,
+                            "Name of Ingredient?", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+                    int amount = Integer.valueOf(JOptionPane.showInputDialog(null,
+                            "Amount?", JOptionPane.QUESTION_MESSAGE));
+                    Ingredient ingredient = new Ingredient(type, name, amount);
+                    ingredients.add(ingredient);
+                } else {
+                    keepGoing = false;
+                }
+            }
+        }
+    }
+
+    private class SetNewSpecialsAction extends AbstractAction {
+        SetNewSpecialsAction() {
+            super("Set New Specials");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String special1 = JOptionPane.showInputDialog(null, "First Special?",
+                    "Name of Drink", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+            String special2 = JOptionPane.showInputDialog(null, "Second Special?",
+                    "Name of Drink", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+            openMenu();
+            menu.setSpecials(special1, special2);
+            saveMenu();
+        }
+    }
+
+    private class ViewStatsAction extends AbstractAction {
+        ViewStatsAction() {
+            super("View Stats");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
+    private class StartNewOrderLogAction extends AbstractAction {
+        StartNewOrderLogAction() {
+            super("Start New Order Log");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                orderLogList = orderLogListReader.readOrderLogList();
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(null,
+                        "Unable to read from file: " + ORDERLOGLIST_JSON_STORE,
+                        "OrderLogListReader", JOptionPane.ERROR_MESSAGE);
+            }
+            String newName = JOptionPane.showInputDialog(null, "Name?",
+                    JOptionPane.QUESTION_MESSAGE).toLowerCase();
+            if (checkName(newName)) {
+                saveOrderLog();
+                orderLog = new OrderLog(newName);
+                JOptionPane.showMessageDialog(null, "Created new order log: " + newName);
+            } else {
+                JOptionPane.showMessageDialog(null, "An Order Log with that name already exists",
+                        "ORDERLOGLIST", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        private boolean checkName(String name) {
+            Boolean nameNotAlreadyUsed = true;
+            for (OrderLog o : orderLogList.getOrderLogList()) {
+                if (o.getName().equals(name)) {
+                    nameNotAlreadyUsed = false;
+                }
+            }
+            return (nameNotAlreadyUsed && !orderLog.getName().equals(name));
+        }
+
+        private void saveOrderLog() {
+            orderLogList.addOrderLog(orderLog);
+            try {
+                orderLogListWriter.open();
+                orderLogListWriter.writeOrderLogList(orderLogList);
+                orderLogListWriter.close();
+                JOptionPane.showMessageDialog(null,
+                        "Added Previous order log to Order Log List"
+                                + "\nSaved Order Log List to " + ORDERLOGLIST_JSON_STORE);
+            } catch (FileNotFoundException exception) {
+                JOptionPane.showMessageDialog(null,
+                        "Unable to write to file " + ORDERLOGLIST_JSON_STORE,
+                        "ORDERLOGLIST", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
 /*
  //Effects: Runs the app
     private void runMenu() {
@@ -237,27 +462,6 @@ public class MenuAppGUI extends JFrame {
             startNewOrderLog();
         } else {
             System.out.println("Option not available");
-        }
-    }
-
-    //Effects: opens the menu by reading it from the json file
-    private void openMenu() {
-        try {
-            menu = menuReader.readMenu();
-        } catch (IOException e) {
-            System.out.println("Unable to read from file " + MENU_JSON_STORE);
-        }
-    }
-
-    //Effects: Saves the menu to the selected json file
-    private void saveMenu() {
-        try {
-            menuWriter.open();
-            menuWriter.writeMenu(menu);
-            menuWriter.close();
-            System.out.println("Saved new menu to " + MENU_JSON_STORE);
-        } catch (FileNotFoundException e) {
-            System.out.println("Unable to write to file " + MENU_JSON_STORE);
         }
     }
 
@@ -427,94 +631,11 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
-    //Effects: Changes what drinks are on special
-    //Modifies: firstSpecial, secondSpecial
-    private void setNewSpecials() {
-        System.out.println("First Special?");
-        String firstSpecial = input.next().toLowerCase();
-        System.out.println("Second Special?");
-        String secondSpecial = input.next().toLowerCase();
-        openMenu();
-        menu.setSpecials(firstSpecial, secondSpecial);
-        saveMenu();
-    }
-
-    //Effects: prompts the user to select specifications to add a new drink to the menu
-    private void addDrinkToMenu() {
-        openMenu();
-        System.out.println("\nDrink Name?");
-        String name = input.next().toLowerCase();
-        System.out.println("\nDrink Price?");
-        double price = input.nextDouble();
-        ArrayList<Ingredient> ingredients = new ArrayList<>();
-        chooseIngredients(ingredients);
-        Drink drink = new Drink(name, price, ingredients, false);
-        try {
-            menu.addDrink(drink);
-        } catch (DuplicateNameException e) {
-            System.out.println("Drink with that name already exists");
-        }
-
-        saveMenu();
-    }
-
-    //Effects: prompts user to select ingredients to add to the list
-    private void chooseIngredients(ArrayList<Ingredient> ingredients) {
-        boolean keepGoing = true;
-        while (keepGoing) {
-            System.out.println("\nadd ingredient? (y/n)");
-            String response = input.next().toLowerCase();
-            if (response.equals("y")) {
-                System.out.println("\ntype?");
-                String type = input.next().toLowerCase();
-                System.out.println("\nname?");
-                String name = input.next().toLowerCase();
-                System.out.println("\namount?");
-                int amount = input.nextInt();
-                Ingredient ingredient = new Ingredient(type, name, amount);
-                ingredients.add(ingredient);
-            } else {
-                keepGoing = false;
-            }
-        }
-    }
-
     //Effects: saves the order log to the json file and creates a new one
-    private void startNewOrderLog() {
-        try {
-            orderLogList = orderLogListReader.readOrderLogList();
-        } catch (IOException e) {
-            System.out.println("Unable to read from file: " + ORDERLOGLIST_JSON_STORE);
-        }
-        System.out.println("name?");
-        String name = input.next();
-        if (checkName(name)) {
-            orderLogList.addOrderLog(orderLog);
-            try {
-                orderLogListWriter.open();
-                orderLogListWriter.writeOrderLogList(orderLogList);
-                orderLogListWriter.close();
-                System.out.println("Added Previous order log to Order Log List");
-                System.out.println("\nSaved Order Log List to " + ORDERLOGLIST_JSON_STORE);
-            } catch (FileNotFoundException e) {
-                System.out.println("Unable to write to file " + ORDERLOGLIST_JSON_STORE);
-            }
 
-            orderLog = new OrderLog(name);
-            System.out.println("Created new order log: " + name);
-        }
-    }
 
     //Effects: return true if the given name has already been used by
     // the current order log or one in the list
-    private boolean checkName(String name) {
-        Boolean nameNotAlreadyUsed = true;
-        for (OrderLog o : orderLogList.getOrderLogList()) {
-            if (o.getName().equals(name)) {
-                nameNotAlreadyUsed = false;
-            }
-        }
-        return (nameNotAlreadyUsed && !orderLog.getName().equals(name));
-    }
+
 */
 }
