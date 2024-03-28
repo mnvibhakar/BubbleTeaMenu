@@ -160,5 +160,13 @@ public class Drink implements Writable {
     public char getSize() {
         return this.size;
     }
+
+    public double getIce() {
+        return this.ice;
+    }
+
+    public double getSugar() {
+        return this.sugar;
+    }
 }
 
