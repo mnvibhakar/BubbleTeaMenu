@@ -7,6 +7,7 @@ import model.exceptions.DuplicateNameException;
 import model.persistence.JsonWriter;
 import model.persistence.JsonReader;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.View;
 import java.awt.*;
@@ -14,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,9 +37,12 @@ public class MenuAppGUI extends JFrame {
     private static final int HEIGHT = 600;
 
     private Menu menu = new Menu();
-    private Drink currentDrink;
     private OrderLog orderLog;
     private OrderLogList orderLogList;
+    private Drink currentDrink;
+    private Order currentOrder;
+    private Boolean orderInProgress;
+    private int currentNumber;
 
     private JsonWriter menuWriter;
     private JsonWriter orderLogListWriter;
@@ -47,7 +53,7 @@ public class MenuAppGUI extends JFrame {
 
     private JPanel homePanel;
     private JPanel managerPanel;
-    private JPanel ordersPanel;
+
 
     public static void main(String[] args) {
         new MenuAppGUI();
@@ -56,6 +62,8 @@ public class MenuAppGUI extends JFrame {
     public MenuAppGUI() {
         initJsonHandling();
         initGUI();
+        orderInProgress = false;
+        currentOrder = new Order();
     }
 
     public void initJsonHandling() {
@@ -72,17 +80,22 @@ public class MenuAppGUI extends JFrame {
                     "Unable to read from file: " + ORDERLOG_JSON_STORE, "ORDERLOG",
                     JOptionPane.ERROR_MESSAGE);
         }
+        if (orderLog.getOrders().isEmpty()) {
+            currentNumber = 1;
+        } else {
+            currentNumber = orderLog.getOrders().get(orderLog.getOrders().size() - 1).getOrderNumber() + 1;
+        }
     }
 
     public void initGUI() {
         homePanel = new HomePanel();
-        ordersPanel = new OrdersPanel();
         managerPanel = new ManagerPanel();
 
         setTitle("Bubble Tea Menu");
         setSize(WIDTH, HEIGHT);
         addMenuBar();
 
+        centreOnScreen();
         setContentPane(homePanel);
         setVisible(true);
     }
@@ -145,26 +158,296 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
+    //Effects: opens the order log by reading it from the json file
+    private void openOrderLogList() {
+        try {
+            orderLogList = orderLogListReader.readOrderLogList();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Unable to read from file: " + ORDERLOGLIST_JSON_STORE,
+                    "OrderLogListReader", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private class HomePanel extends JPanel {
         HomePanel() {
+            this.setLayout(new BorderLayout());
+            BufferedImage image;
+            try {
+                image = ImageIO.read(new File("./bubble_tea_image.jpg"));
+                JLabel imageLabel = new JLabel(new ImageIcon(image));
+                this.add(imageLabel, BorderLayout.CENTER);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Image not found", "HOME",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+            JTextArea welcomeMessage  = new JTextArea("Welcome to the bubble tea shop!");
+            welcomeMessage.setFont(new Font("serif", Font.PLAIN, 36));
+            this.add(welcomeMessage, BorderLayout.NORTH);
+
         }
     }
 
     private class MenuPanel extends JPanel {
         MenuPanel() {
-            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            setLayout(new BorderLayout());
+            JPanel drinkPanel = new JPanel();
+            drinkPanel.setPreferredSize(new Dimension(750, HEIGHT));
+            JTextArea displayPanel = new JTextArea();
+            displayPanel.setPreferredSize(new Dimension(235, HEIGHT));
+            displayPanel.setFont(new Font("serif", Font.PLAIN, 18));
             openMenu();
+            drinkPanel.setLayout(new GridLayout(menu.getDrinks().size() / 4, menu.getDrinks().size() / 4));
             for (Drink d : menu.getDrinks()) {
-                currentDrink = d;
-                add(new JButton(new OrderDrinkAction()));
+                drinkPanel.add(new JButton(new OrderDrinkAction(d)));
             }
-            currentDrink = null;
+            displayDrinksInOrder(displayPanel);
+            add(drinkPanel, BorderLayout.WEST);
+            add(displayPanel, BorderLayout.EAST);
+            add(new JButton(new FinishOrderAction()), BorderLayout.SOUTH);
+        }
+
+        private void displayDrinksInOrder(JTextArea displayPanel) {
+            for (Drink d : currentOrder.getDrinksOrdered()) {
+                displayPanel.append(d.getName());
+                displayPanel.append("\nSize: " + Character.toString(d.getSize()));
+                displayPanel.append("\nPrice: " + Double.toString(d.getPrice()));
+                displayPanel.append("\n-------------\n");
+            }
+            displayPanel.append("Total: " + Double.toString(currentOrder.getTotalPrice()));
+        }
+
+        private class OrderDrinkAction extends AbstractAction {
+            private Drink drinkSelected;
+
+            OrderDrinkAction(Drink drink) {
+                super(drink.getName());
+                drinkSelected = drink;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentDrink = drinkSelected;
+                switchPanel(new DrinkPanel());
+                orderInProgress = true;
+            }
+        }
+
+        private class FinishOrderAction extends AbstractAction {
+            FinishOrderAction() {
+                super("Finish Order");
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentOrder.setOrderNumber(currentNumber);
+                orderLog.addOrder(currentOrder);
+                currentOrder = new Order();
+                currentNumber++;
+            }
+        }
+
+        private class DrinkPanel extends JPanel {
+
+            private JTabbedPane topBar;
+            private ArrayList<String> toppings;
+            private double ice;
+            private double sugar;
+            private String size;
+
+            DrinkPanel() {
+                size = "s";
+                toppings = new ArrayList<>();
+                ice = 1;
+                sugar = 1;
+                topBar = new JTabbedPane();
+                topBar.setTabPlacement(JTabbedPane.TOP);
+                loadTabs();
+                add(topBar);
+                JMenuBar drinkOptions = new JMenuBar();
+                drinkOptions.add(new JMenuItem(new FinishDrinkAction()));
+                add(drinkOptions);
+            }
+
+            private void loadTabs() {
+                JPanel sizeTab = new SizeTab();
+                JPanel toppingsTab = new ToppingsTab();
+                JPanel iceTab = new IceTab();
+                JPanel sugarTab = new SugarTab();
+
+                topBar.add(sizeTab);
+                topBar.setTitleAt(0, "Size");
+                topBar.add(toppingsTab);
+                topBar.setTitleAt(1, "Toppings");
+                topBar.add(iceTab);
+                topBar.setTitleAt(2, "Ice");
+                topBar.add(sugarTab);
+                topBar.setTitleAt(3, "Sugar");
+            }
+
+            private class SizeTab extends JPanel {
+                SizeTab() {
+                    add(new JButton(new ChooseSizeAction("s")));
+                    add(new JButton(new ChooseSizeAction("l")));
+                }
+
+                private class ChooseSizeAction extends AbstractAction {
+                    private String chosenSize;
+
+                    public ChooseSizeAction(String s) {
+                        super(s);
+                        chosenSize = s;
+                    }
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        size = chosenSize;
+                    }
+                }
+            }
+
+            private class ToppingsTab extends JPanel {
+                ToppingsTab() {
+                    add(new JButton(new ChooseToppingAction("pearls")));
+                    add(new JButton(new ChooseToppingAction("grass jelly")));
+                    add(new JButton(new ChooseToppingAction("coconut jelly")));
+                }
+
+                private class ChooseToppingAction extends AbstractAction {
+                    private String toppingChoice;
+
+                    public ChooseToppingAction(String t) {
+                        super(t);
+                        toppingChoice = t;
+                    }
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (toppings.size() < 2) {
+                            toppings.add(toppingChoice);
+                        } else {
+                            int removeToppingChoice = JOptionPane.showConfirmDialog(null,
+                                    "2 toppings already in drink, remove topping?");
+                            if (removeToppingChoice == JOptionPane.YES_OPTION) {
+                                toppings.clear();
+                            }
+                        }
+                    }
+                }
+            }
+
+            private class IceTab extends JPanel {
+                IceTab() {
+                    add(new JButton(new ChooseIceAction(0)));
+                    add(new JButton(new ChooseIceAction(0.5)));
+                    add(new JButton(new ChooseIceAction(1)));
+                }
+
+                private class ChooseIceAction extends AbstractAction {
+                    private double iceOption;
+
+                    public ChooseIceAction(double i) {
+                        super(Double.toString(i));
+                        iceOption = i;
+                    }
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        ice = iceOption;
+                    }
+                }
+            }
+
+            private class SugarTab extends JPanel {
+                SugarTab() {
+                    add(new JButton(new ChooseSugarAction(0)));
+                    add(new JButton(new ChooseSugarAction(0.25)));
+                    add(new JButton(new ChooseSugarAction(0.5)));
+                    add(new JButton(new ChooseSugarAction(0.75)));
+                    add(new JButton(new ChooseSugarAction(1)));
+                    add(new JButton(new ChooseSugarAction(1.25)));
+                }
+
+                private class ChooseSugarAction extends AbstractAction {
+                    private double sugarChoice;
+
+                    public ChooseSugarAction(double s) {
+                        super(Double.toString(s));
+                        sugarChoice = s;
+                    }
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        sugar = sugarChoice;
+                    }
+                }
+            }
+
+            private class FinishDrinkAction extends AbstractAction {
+
+                FinishDrinkAction() {
+                    super("Done");
+                }
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    currentOrder.orderDrink(size, toppings, ice, sugar, currentDrink);
+                    orderInProgress = false;
+                    switchPanel(new MenuPanel());
+
+                }
+            }
         }
     }
 
     private class OrdersPanel extends JPanel {
-        OrdersPanel() {
+        private JTextArea orderDisplay;
 
+        OrdersPanel() {
+            setLayout(new BorderLayout());
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+            addOrderButtons(buttonPanel);
+            JScrollPane orderScroll = new JScrollPane(buttonPanel);
+            orderScroll.setPreferredSize(new Dimension(300, HEIGHT));
+            orderDisplay = new JTextArea();
+            this.add(orderScroll, BorderLayout.WEST);
+            this.add(orderDisplay);
+        }
+
+        private void addOrderButtons(JPanel buttonPanel) {
+            for (Order o : orderLog.getOrders()) {
+                JButton orderButton = new JButton(new DisplayOrderAction(o));
+                orderButton.setMaximumSize(new Dimension(280, 100));
+                buttonPanel.add(orderButton);
+            }
+        }
+
+        private class DisplayOrderAction extends AbstractAction {
+            Order displayedOrder;
+
+            DisplayOrderAction(Order ord) {
+                super(Integer.toString(ord.getOrderNumber()));
+                displayedOrder = ord;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                orderDisplay.setText("");
+                orderDisplay.append(Double.toString(displayedOrder.getTotalPrice()));
+                orderDisplay.append("\n--------------------");
+                for (Drink d : displayedOrder.getDrinksOrdered()) {
+                    orderDisplay.append("\n" + d.getName());
+                    orderDisplay.append("\nSize: " + Character.toString(d.getSize()));
+                    orderDisplay.append("\nIce: " + Double.toString(d.getIce()));
+                    orderDisplay.append("\nSugar: " + Double.toString(d.getSugar()));
+                    for (String t : d.getToppings()) {
+                        orderDisplay.append("\n" + t);
+                    }
+                    orderDisplay.append("\n--------------------");
+                }
+                add(orderDisplay);
+            }
         }
     }
 
@@ -175,6 +458,218 @@ public class MenuAppGUI extends JFrame {
             add(new JButton(new ViewStatsAction()));
             add(new JButton(new StartNewOrderLogAction()));
         }
+
+        private class AddDrinkToMenuAction extends AbstractAction {
+            AddDrinkToMenuAction() {
+                super("Add New Drink");
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String drinkName = JOptionPane.showInputDialog(null,
+                        "Name of Drink", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+                double price = Double.valueOf(JOptionPane.showInputDialog(null,
+                        "Price of Drink?", JOptionPane.QUESTION_MESSAGE));
+                openMenu();
+                ArrayList<Ingredient> ingredients;
+                ingredients = new ArrayList<>();
+                chooseIngredients(ingredients);
+                Drink newDrink = new Drink(drinkName, price, ingredients, false);
+                openMenu();
+                try {
+                    menu.addDrink(newDrink);
+                } catch (DuplicateNameException exception) {
+                    JOptionPane.showMessageDialog(null, exception.getMessage(),
+                            "Menu", JOptionPane.ERROR_MESSAGE);
+                }
+                saveMenu();
+                JOptionPane.showMessageDialog(null, "Drink added to menu!");
+            }
+
+            private void chooseIngredients(ArrayList<Ingredient> ingredients) {
+                boolean keepGoing = true;
+                while (keepGoing) {
+                    int addIngredient = JOptionPane.showConfirmDialog(null, "Add Ingredient?");
+                    if (addIngredient == JOptionPane.YES_OPTION) {
+                        String type = JOptionPane.showInputDialog(null,
+                                "Type of Ingredient?", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+                        String name = JOptionPane.showInputDialog(null,
+                                "Name of Ingredient?", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+                        int amount = Integer.valueOf(JOptionPane.showInputDialog(null,
+                                "Amount?", JOptionPane.QUESTION_MESSAGE));
+                        Ingredient ingredient = new Ingredient(type, name, amount);
+                        ingredients.add(ingredient);
+                    } else {
+                        keepGoing = false;
+                    }
+                }
+            }
+        }
+
+        private class SetNewSpecialsAction extends AbstractAction {
+            SetNewSpecialsAction() {
+                super("Set New Specials");
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String special1 = JOptionPane.showInputDialog(null, "First Special?",
+                        "Name of Drink", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+                String special2 = JOptionPane.showInputDialog(null, "Second Special?",
+                        "Name of Drink", JOptionPane.QUESTION_MESSAGE).toLowerCase();
+                openMenu();
+                menu.setSpecials(special1, special2);
+                saveMenu();
+            }
+        }
+
+        private class ViewStatsAction extends AbstractAction {
+            ViewStatsAction() {
+                super("View Stats");
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String[] options1 = {"current order log", "previous order log"};
+                int selectedChoice = JOptionPane.showOptionDialog(null,
+                        "view current order log or previous order log", "STATS",
+                        0, 2, null, options1, options1[0]);
+                if (selectedChoice == 0) {
+                    viewStats(orderLog);
+                } else if (selectedChoice == 1) {
+                    switchPanel(new OrderLogPanel());
+                }
+            }
+
+            private class OrderLogPanel extends JPanel {
+                OrderLogPanel() {
+                    openOrderLogList();
+                    for (OrderLog o : orderLogList.getOrderLogList()) {
+                        this.add(new JButton(new SelectOrderLogAction(o)));
+                    }
+                }
+            }
+
+            private class SelectOrderLogAction extends AbstractAction {
+                private OrderLog selectedOrderLog;
+
+                public SelectOrderLogAction(OrderLog o) {
+                    super(o.getName());
+                    selectedOrderLog = o;
+                }
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    viewStats(selectedOrderLog);
+                }
+            }
+
+            public void viewStats(OrderLog o) {
+                String[] options2 = {"price stats", "ingredient stats"};
+                int selectedChoice = JOptionPane.showOptionDialog(null,
+                        "Which stat would you like to view?", "STATS",
+                        0, 2, null, options2, options2[0]);
+                if (selectedChoice == 0) {
+                    double priceTotal = o.getTotalPrice();
+                    double priceAverage = priceTotal / o.getOrders().size();
+                    JOptionPane.showMessageDialog(null,
+                            "Total revenue: " + Double.toString(priceTotal)
+                                    + "\nAverage price per order: " + Double.toString(priceAverage));
+                } else if (selectedChoice == 1) {
+                    switchPanel(new IngredientsPanel(o));
+                }
+            }
+
+            private class IngredientsPanel extends JPanel {
+                private ArrayList<Ingredient> ingredients;
+
+                public IngredientsPanel(OrderLog o) {
+                    ingredients = new ArrayList<>();
+                    boolean ingredientHandled = false;
+                    for (Order order : o.getOrders()) {
+                        for (Drink d : order.getDrinksOrdered()) {
+                            for (Ingredient i : d.getIngredients()) {
+                                for (Ingredient ing : ingredients) {
+                                    if (i.getName().equals(ing.getName())) {
+                                        ing.addAmount(i.getAmount());
+                                        ingredientHandled = true;
+                                    }
+                                }
+                                if (ingredientHandled == false) {
+                                    ingredients.add(new Ingredient(i.getType(), i.getName(), i.getAmount()));
+                                }
+                                ingredientHandled = false;
+                            }
+                        }
+                    }
+                    for (Ingredient i : ingredients) {
+                        this.add(new JButton(new ViewIngredientStatAction(i)));
+                    }
+                }
+
+                private class ViewIngredientStatAction extends AbstractAction {
+                    private Ingredient selectedIngredient;
+
+                    public ViewIngredientStatAction(Ingredient i) {
+                        super(i.getName());
+                        selectedIngredient = i;
+                    }
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JOptionPane.showMessageDialog(null,
+                                Integer.toString(selectedIngredient.getAmount()));
+                    }
+                }
+            }
+        }
+
+        private class StartNewOrderLogAction extends AbstractAction {
+            StartNewOrderLogAction() {
+                super("Start New Order Log");
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openOrderLogList();
+                String newName = JOptionPane.showInputDialog(null, "Name?",
+                        JOptionPane.QUESTION_MESSAGE).toLowerCase();
+                if (checkName(newName)) {
+                    saveOrderLog();
+                    orderLog = new OrderLog(newName);
+                    JOptionPane.showMessageDialog(null, "Created new order log: " + newName);
+                } else {
+                    JOptionPane.showMessageDialog(null, "An Order Log with that name already exists",
+                            "ORDERLOGLIST", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+            private boolean checkName(String name) {
+                Boolean nameNotAlreadyUsed = true;
+                for (OrderLog o : orderLogList.getOrderLogList()) {
+                    if (o.getName().equals(name)) {
+                        nameNotAlreadyUsed = false;
+                    }
+                }
+                return (nameNotAlreadyUsed && !orderLog.getName().equals(name));
+            }
+
+            private void saveOrderLog() {
+                orderLogList.addOrderLog(orderLog);
+                try {
+                    orderLogListWriter.open();
+                    orderLogListWriter.writeOrderLogList(orderLogList);
+                    orderLogListWriter.close();
+                    JOptionPane.showMessageDialog(null,
+                            "Added Previous order log to Order Log List"
+                                    + "\nSaved Order Log List to " + ORDERLOGLIST_JSON_STORE);
+                } catch (FileNotFoundException exception) {
+                    JOptionPane.showMessageDialog(null,
+                            "Unable to write to file " + ORDERLOGLIST_JSON_STORE,
+                            "ORDERLOGLIST", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
     }
 
     private class GoToHomeAction extends AbstractAction {
@@ -184,14 +679,12 @@ public class MenuAppGUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            switchPanel(homePanel);
-        }
-    }
-
-    private class DesktopFocusAction extends MouseAdapter {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            MenuAppGUI.this.requestFocusInWindow();
+            if (!orderInProgress) {
+                switchPanel(homePanel);
+            } else {
+                JOptionPane.showMessageDialog(null, "Finish Ordering Drink", "ORDER",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -202,7 +695,12 @@ public class MenuAppGUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            switchPanel(new MenuPanel());
+            if (!orderInProgress) {
+                switchPanel(new MenuPanel());
+            } else {
+                JOptionPane.showMessageDialog(null, "Finish Ordering Drink", "ORDER",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -213,13 +711,22 @@ public class MenuAppGUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String inputCode = JOptionPane.showInputDialog(null,
-                    "passcode?",
-                    "Enter code",
-                    JOptionPane.QUESTION_MESSAGE);
-            if (inputCode.equals(managerPasscode)) {
-                switchPanel(managerPanel);
+            if (!orderInProgress) {
+                String inputCode = JOptionPane.showInputDialog(null,
+                        "passcode?",
+                        "Enter code",
+                        JOptionPane.QUESTION_MESSAGE);
+                if (inputCode.equals(managerPasscode)) {
+                    switchPanel(managerPanel);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Incorrect code", "MANAGER",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Finish ordering drink", "ORDER",
+                        JOptionPane.ERROR_MESSAGE);
             }
+
         }
     }
 
@@ -230,412 +737,12 @@ public class MenuAppGUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            switchPanel(ordersPanel);
-        }
-    }
-
-    private class OrderDrinkAction extends AbstractAction {
-        OrderDrinkAction() {
-            super(currentDrink.getName());
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-        }
-    }
-
-    private class AddDrinkToMenuAction extends AbstractAction {
-        AddDrinkToMenuAction() {
-            super("Add New Drink");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String drinkName = JOptionPane.showInputDialog(null,
-                    "Name of Drink", JOptionPane.QUESTION_MESSAGE).toLowerCase();
-            double price = Double.valueOf(JOptionPane.showInputDialog(null,
-                    "Price of Drink?", JOptionPane.QUESTION_MESSAGE));
-            openMenu();
-            ArrayList<Ingredient> ingredients;
-            ingredients = new ArrayList<>();
-            chooseIngredients(ingredients);
-            Drink newDrink = new Drink(drinkName, price, ingredients, false);
-            openMenu();
-            try {
-                menu.addDrink(newDrink);
-            } catch (DuplicateNameException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(),
-                        "Menu", JOptionPane.ERROR_MESSAGE);
-            }
-            saveMenu();
-            JOptionPane.showMessageDialog(null, "Drink added to menu!");
-        }
-
-        private void chooseIngredients(ArrayList<Ingredient> ingredients) {
-            boolean keepGoing = true;
-            while (keepGoing) {
-                int addIngredient = JOptionPane.showConfirmDialog(null, "Add Ingredient?");
-                if (addIngredient == JOptionPane.YES_OPTION) {
-                    String type = JOptionPane.showInputDialog(null,
-                            "Type of Ingredient?", JOptionPane.QUESTION_MESSAGE).toLowerCase();
-                    String name = JOptionPane.showInputDialog(null,
-                            "Name of Ingredient?", JOptionPane.QUESTION_MESSAGE).toLowerCase();
-                    int amount = Integer.valueOf(JOptionPane.showInputDialog(null,
-                            "Amount?", JOptionPane.QUESTION_MESSAGE));
-                    Ingredient ingredient = new Ingredient(type, name, amount);
-                    ingredients.add(ingredient);
-                } else {
-                    keepGoing = false;
-                }
-            }
-        }
-    }
-
-    private class SetNewSpecialsAction extends AbstractAction {
-        SetNewSpecialsAction() {
-            super("Set New Specials");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String special1 = JOptionPane.showInputDialog(null, "First Special?",
-                    "Name of Drink", JOptionPane.QUESTION_MESSAGE).toLowerCase();
-            String special2 = JOptionPane.showInputDialog(null, "Second Special?",
-                    "Name of Drink", JOptionPane.QUESTION_MESSAGE).toLowerCase();
-            openMenu();
-            menu.setSpecials(special1, special2);
-            saveMenu();
-        }
-    }
-
-    private class ViewStatsAction extends AbstractAction {
-        ViewStatsAction() {
-            super("View Stats");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-        }
-    }
-
-    private class StartNewOrderLogAction extends AbstractAction {
-        StartNewOrderLogAction() {
-            super("Start New Order Log");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                orderLogList = orderLogListReader.readOrderLogList();
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(null,
-                        "Unable to read from file: " + ORDERLOGLIST_JSON_STORE,
-                        "OrderLogListReader", JOptionPane.ERROR_MESSAGE);
-            }
-            String newName = JOptionPane.showInputDialog(null, "Name?",
-                    JOptionPane.QUESTION_MESSAGE).toLowerCase();
-            if (checkName(newName)) {
-                saveOrderLog();
-                orderLog = new OrderLog(newName);
-                JOptionPane.showMessageDialog(null, "Created new order log: " + newName);
+            if (!orderInProgress) {
+                switchPanel(new OrdersPanel());
             } else {
-                JOptionPane.showMessageDialog(null, "An Order Log with that name already exists",
-                        "ORDERLOGLIST", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-
-        private boolean checkName(String name) {
-            Boolean nameNotAlreadyUsed = true;
-            for (OrderLog o : orderLogList.getOrderLogList()) {
-                if (o.getName().equals(name)) {
-                    nameNotAlreadyUsed = false;
-                }
-            }
-            return (nameNotAlreadyUsed && !orderLog.getName().equals(name));
-        }
-
-        private void saveOrderLog() {
-            orderLogList.addOrderLog(orderLog);
-            try {
-                orderLogListWriter.open();
-                orderLogListWriter.writeOrderLogList(orderLogList);
-                orderLogListWriter.close();
-                JOptionPane.showMessageDialog(null,
-                        "Added Previous order log to Order Log List"
-                                + "\nSaved Order Log List to " + ORDERLOGLIST_JSON_STORE);
-            } catch (FileNotFoundException exception) {
-                JOptionPane.showMessageDialog(null,
-                        "Unable to write to file " + ORDERLOGLIST_JSON_STORE,
-                        "ORDERLOGLIST", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Finish Ordering Drink", "ORDER",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
-
-/*
- //Effects: Runs the app
-    private void runMenu() {
-        boolean keepGoing = true;
-        String command;
-
-        while (keepGoing) {
-            displayOptions();
-            command = input.next().toLowerCase();
-
-            if (command.equals("q")) {
-                keepGoing = false;
-            } else {
-                processCommand(command);
-            }
-        }
-
-        System.out.println("\nTill next time!");
-        try {
-            orderLogWriter.open();
-            orderLogWriter.writeOrderLog(orderLog);
-            orderLogWriter.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("Could not write to file " + ORDERLOG_JSON_STORE);
-        }
-    }
-
-    //Effects: displays the base options for the app
-    private void displayOptions() {
-        System.out.println("\nChoose From:");
-        System.out.println("\to -> Order Drinks");
-        System.out.println("\tm -> Manager Actions");
-        System.out.println("\tq -> Quit");
-    }
-
-    //Effects: reads the user input and selects the corresponding action
-    private void processCommand(String command) {
-        if (command.equals("o")) {
-            orderDrinks();
-        } else if (command.equals("m")) {
-            System.out.println("Manager Passcode: ");
-            int code = input.nextInt();
-            if (code == managerPasscode) {
-                doManagerActions();
-            } else {
-                System.out.println("Incorrect Code");
-            }
-
-        } else {
-            System.out.println("Option not available");
-        }
-    }
-
-    //Effects: displays options for manager actions and reads user input
-    private void doManagerActions() {
-        boolean keepGoing = true;
-        String managerCommand;
-
-        while (keepGoing) {
-            System.out.println("\tv -> View Stats");
-            System.out.println("\ta -> Add new drink to menu");
-            System.out.println("\ts -> Set New Specials");
-            System.out.println("\tn -> Start New Order Log");
-            System.out.println("\tq -> Back to first menu");
-            managerCommand = input.next().toLowerCase();
-
-            if (managerCommand.equals("q")) {
-                keepGoing = false;
-            } else {
-                processManagerCommand(managerCommand);
-            }
-        }
-
-        System.out.println("\nTill next time!");
-
-    }
-
-    //Effects: processes user input and executes chosen action
-    private void processManagerCommand(String managerCommand) {
-        if (managerCommand.equals("v")) {
-            viewStats();
-        } else if (managerCommand.equals("a")) {
-            addDrinkToMenu();
-        } else if (managerCommand.equals("s")) {
-            setNewSpecials();
-        } else if (managerCommand.equals("n")) {
-            startNewOrderLog();
-        } else {
-            System.out.println("Option not available");
-        }
-    }
-
-    //Effects: orders drinks as specified by the user
-    private void orderDrinks() {
-        Order currentOrder = new Order();
-        boolean continueOrder = true;
-
-        while (continueOrder) {
-            Drink drink = getDrink();
-            if (drink != null) {
-                chooseDrinkOptions(drink, currentOrder);
-            } else {
-                System.out.println("\nDrink Not found");
-            }
-
-            System.out.println("\nAdd more drinks?");
-            System.out.println("\ty -> Yes");
-            System.out.println("\tn -> No");
-            String selectedOption = input.next().toLowerCase();
-            if (selectedOption.equals("n")) {
-                continueOrder = false;
-            }
-        }
-
-        printDrinksOrdered(currentOrder);
-
-    }
-
-    //Effects: returns a new drink with the chosen name
-    private Drink getDrink() {
-        openMenu();
-        System.out.println("\nChoose Drink: ");
-        for (Drink drink : menu.getDrinks()) {
-            System.out.println(drink.getName());
-        }
-        String drinkName = input.next().toLowerCase();
-        return menu.findDrink(drinkName);
-    }
-
-    //Effects: Chooses the options for the given drink, orders the drink
-    private void chooseDrinkOptions(Drink drink, Order order) {
-        System.out.println("\nChoose Size (s,l): ");
-        String size = input.next();
-        System.out.println("\nChoose Ice (0,0.5,1): ");
-        double ice = input.nextDouble();
-        System.out.println("\nChoose Sugar (0,0.25,0.5,0.75,1): ");
-        double sugar = input.nextDouble();
-
-        ArrayList<String> exTop = new ArrayList<>();
-        boolean moreTop = true;
-        while (exTop.size() <= 2 && moreTop) {
-            System.out.println("\nAny extra toppings? (y,n) ");
-            String option = input.next();
-            if (option.equals("y")) {
-                System.out.println("\n Choose Topping: ");
-                String top = input.next();
-                exTop.add(top);
-            } else {
-                moreTop = false;
-            }
-        }
-        System.out.println(drink.getName());
-        order.orderDrink(size, exTop, ice, sugar, drink);
-    }
-
-    //Effects: Prints the drinks in the current order, prints the price pre-tax
-    //         Applies tax to the price, prints post-tax price, adds order to order log
-    //Modifies: orderLog
-    private void printDrinksOrdered(Order currentOrder) {
-        System.out.println("\nDrinks Ordered: ");
-        for (Drink drink : currentOrder.getDrinksOrdered()) {
-            System.out.println(drink.getName());
-        }
-        System.out.println("\nTotal Price Pre-tax: ");
-        System.out.println(currentOrder.getTotalPrice());
-        currentOrder.applyTax();
-        System.out.println("\nTotal Price Post-tax: ");
-        System.out.println(currentOrder.getTotalPrice());
-        orderLog.addOrder(currentOrder);
-    }
-
-    //Effects: opens the order log by reading it from the json file
-    private void openOrderLogList() {
-        try {
-            orderLogList = orderLogListReader.readOrderLogList();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    //Effects: Selects an orderLog from the orderLogList by prompting user input for the name
-    private OrderLog selectOrderLog() {
-        for (OrderLog o : orderLogList.getOrderLogList()) {
-            System.out.println(o.getName());
-        }
-        String selectedOrderLogName = input.next().toLowerCase();
-        OrderLog selectedOrderLog = null;
-        for (OrderLog o : orderLogList.getOrderLogList()) {
-            if (o.getName().equals(selectedOrderLogName)) {
-                selectedOrderLog = o;
-            }
-        }
-        return selectedOrderLog;
-    }
-
-    //Effects: Displays the options for stats, reads user input, and selects the corresponding stat action
-    private void viewStats() {
-        System.out.println("which order log would you like stats for?");
-        System.out.println("\nc -> Current Order Log");
-        System.out.println("\nl -> load from memory");
-        String response = input.next().toLowerCase();
-        OrderLog selectedOrderLog = new OrderLog("");
-        if (response.equals("c")) {
-            selectedOrderLog = orderLog;
-        } else if (response.equals("l")) {
-            openOrderLogList();
-            selectedOrderLog = selectOrderLog();
-        }
-        System.out.println("\nWhich stat would you like to view?");
-        System.out.println("\ti -> ingredients");
-        System.out.println("\tp -> price");
-        String selectedOption = input.next().toLowerCase();
-        if (selectedOption.equals("i")) {
-            displayIngredientStats(selectedOrderLog);
-        } else if (selectedOption.equals("p")) {
-            displayPriceStats(selectedOrderLog);
-        } else {
-            System.out.println("Selection not valid");
-        }
-    }
-
-    //Effects: displays stats about the price of all orders in orderLog
-    private void displayPriceStats(OrderLog o) {
-        if (o == null) {
-            System.out.println("Order Log not found");
-        } else {
-            int numDrinksOrdered = 0;
-            double totalPriceAllDrinks = 0;
-            for (Order order: o.getOrders()) {
-                numDrinksOrdered += order.getDrinksOrdered().size();
-                totalPriceAllDrinks += order.getTotalPrice();
-            }
-            double averageOrderPrice = totalPriceAllDrinks / o.getOrders().size();
-            System.out.println("\nNumber of Drinks Ordered:");
-            System.out.println(numDrinksOrdered);
-            System.out.println("\nTotal Revenue:");
-            System.out.println(totalPriceAllDrinks);
-            System.out.println("\nAverage Price per Order:");
-            System.out.println(averageOrderPrice);
-        }
-    }
-
-    //Effects: Displays stats about the ingredients of all orders in orderLog
-    private void displayIngredientStats(OrderLog o) {
-        if (o == null) {
-            System.out.println("Order Log not found");
-        } else {
-            System.out.println("\nWhat ingredient would you like to view?");
-            String ingredient = input.next().toLowerCase();
-            int ingredientAmount = 0;
-            for (Order order : o.getOrders()) {
-                ingredientAmount += order.getIngredientAmount(ingredient);
-            }
-            System.out.println("\nAmount used:");
-            System.out.println(ingredientAmount);
-        }
-    }
-
-    //Effects: saves the order log to the json file and creates a new one
-
-
-    //Effects: return true if the given name has already been used by
-    // the current order log or one in the list
-
-*/
 }
