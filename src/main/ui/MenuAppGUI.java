@@ -9,11 +9,8 @@ import model.persistence.JsonReader;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.text.View;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -22,14 +19,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /*
-Represents the menu app, processes user input to execute the chosen tasks, including:
+Represents the menu app graphical user interface
+Displays options and information on the screen, processes user input to execute the chosen tasks, including:
     -ordering drinks
+    -viewing previous orders in the current orderLog
     -changing specials
     -viewing stats about price and ingredients
+    -adding a new drink to the menu
+    -beginning a new order log
  */
 public class MenuAppGUI extends JFrame {
 
-    private final String managerPasscode = "1234";
     private static final String MENU_JSON_STORE = "./data/menu.json";
     private static final String ORDERLOGLIST_JSON_STORE = "./data/orderLogList.json";
     private static final String ORDERLOG_JSON_STORE = "./data/orderLog.json";
@@ -49,7 +49,6 @@ public class MenuAppGUI extends JFrame {
     private JsonWriter orderLogWriter;
     private JsonReader menuReader;
     private JsonReader orderLogListReader;
-    private JsonReader orderLogReader;
 
     private JPanel homePanel;
     private JPanel managerPanel;
@@ -66,13 +65,14 @@ public class MenuAppGUI extends JFrame {
         currentOrder = new Order();
     }
 
+    //Effects:  initializes the JSON reader and writer, opens the previous order log
     public void initJsonHandling() {
         menuWriter = new JsonWriter(MENU_JSON_STORE);
         menuReader = new JsonReader(MENU_JSON_STORE);
         orderLogListWriter = new JsonWriter(ORDERLOGLIST_JSON_STORE);
         orderLogListReader = new JsonReader(ORDERLOGLIST_JSON_STORE);
         orderLogWriter = new JsonWriter(ORDERLOG_JSON_STORE);
-        orderLogReader = new JsonReader(ORDERLOG_JSON_STORE);
+        JsonReader orderLogReader = new JsonReader(ORDERLOG_JSON_STORE);
         try {
             orderLog = orderLogReader.readOrderLog();
         } catch (IOException e) {
@@ -87,6 +87,7 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
+    //Effects: initializes the GUI, sets initial content to the home panel, adds the menu bar
     public void initGUI() {
         homePanel = new HomePanel();
         managerPanel = new ManagerPanel();
@@ -100,6 +101,7 @@ public class MenuAppGUI extends JFrame {
         setVisible(true);
     }
 
+    //Effects: Saves the orderLog when the window is closed
     protected void processWindowEvent(WindowEvent e) {
         super.processWindowEvent(e);
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
@@ -116,6 +118,7 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
+    //Effects: Creates the menu bar
     private void addMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(new JMenuItem(new GoToHomeAction()));
@@ -125,12 +128,14 @@ public class MenuAppGUI extends JFrame {
         setJMenuBar(menuBar);
     }
 
+    //Effects: Centers the window on the screen
     private void centreOnScreen() {
         int width = Toolkit.getDefaultToolkit().getScreenSize().width;
         int height = Toolkit.getDefaultToolkit().getScreenSize().height;
         setLocation((width - getWidth()) / 2, (height - getHeight()) / 2);
     }
 
+    //Effects: switches which panel is being viewed
     private void switchPanel(JPanel panel) {
         setContentPane(panel);
         repaint();
@@ -169,7 +174,9 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
-    private class HomePanel extends JPanel {
+    //Represents a JPanel for the home screen
+    //Includes a welcome message and image
+    private static class HomePanel extends JPanel {
         HomePanel() {
             this.setLayout(new BorderLayout());
             BufferedImage image;
@@ -188,6 +195,8 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
+    //Represents a JPanel for the Menu
+    //includes tasks for ordering drinks
     private class MenuPanel extends JPanel {
         MenuPanel() {
             setLayout(new BorderLayout());
@@ -207,6 +216,8 @@ public class MenuAppGUI extends JFrame {
             add(new JButton(new FinishOrderAction()), BorderLayout.SOUTH);
         }
 
+        //Effects: writes text info about the drinks in currentOrder to displayPanel
+        //Modifies: displayPanel
         private void displayDrinksInOrder(JTextArea displayPanel) {
             for (Drink d : currentOrder.getDrinksOrdered()) {
                 displayPanel.append(d.getName());
@@ -217,14 +228,17 @@ public class MenuAppGUI extends JFrame {
             displayPanel.append("Total: " + Double.toString(currentOrder.getTotalPrice()));
         }
 
+        //Represents an action to order the selected Drink
         private class OrderDrinkAction extends AbstractAction {
-            private Drink drinkSelected;
+            private final Drink drinkSelected;
 
             OrderDrinkAction(Drink drink) {
                 super(drink.getName());
                 drinkSelected = drink;
             }
 
+            //Effects: selects the given drink and switches to drink panel for ordering
+            //Modifies: currentDrink
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentDrink = drinkSelected;
@@ -233,11 +247,14 @@ public class MenuAppGUI extends JFrame {
             }
         }
 
+        //Represents an action to complete the currentOrder
         private class FinishOrderAction extends AbstractAction {
             FinishOrderAction() {
                 super("Finish Order");
             }
 
+            //Effects: adds currentOrder to orderLog and starts a new order
+            //Modifies: currentOrder, orderLog, currentNumber
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentOrder.setOrderNumber(currentNumber);
@@ -247,10 +264,12 @@ public class MenuAppGUI extends JFrame {
             }
         }
 
+        //Represents an JPanel that contains options for drink specifications
+        //Includes tasks to change the specifications and order the drink
         private class DrinkPanel extends JPanel {
 
-            private JTabbedPane topBar;
-            private ArrayList<String> toppings;
+            private final JTabbedPane topBar;
+            private final ArrayList<String> toppings;
             private double ice;
             private double sugar;
             private String size;
@@ -269,6 +288,7 @@ public class MenuAppGUI extends JFrame {
                 add(drinkOptions);
             }
 
+            //Effects: creates the tabs representing the various specifications
             private void loadTabs() {
                 JPanel sizeTab = new SizeTab();
                 JPanel toppingsTab = new ToppingsTab();
@@ -285,20 +305,23 @@ public class MenuAppGUI extends JFrame {
                 topBar.setTitleAt(3, "Sugar");
             }
 
+            //Represents a JPanel for choosing the size of the drink
             private class SizeTab extends JPanel {
                 SizeTab() {
                     add(new JButton(new ChooseSizeAction("s")));
                     add(new JButton(new ChooseSizeAction("l")));
                 }
 
+                //Represents an action for choosing the size
                 private class ChooseSizeAction extends AbstractAction {
-                    private String chosenSize;
+                    private final String chosenSize;
 
                     public ChooseSizeAction(String s) {
                         super(s);
                         chosenSize = s;
                     }
 
+                    //Effects: sets size as the chosen size
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         size = chosenSize;
@@ -306,6 +329,7 @@ public class MenuAppGUI extends JFrame {
                 }
             }
 
+            //Represents a JPanel for choosing the toppings in the drink
             private class ToppingsTab extends JPanel {
                 ToppingsTab() {
                     add(new JButton(new ChooseToppingAction("pearls")));
@@ -313,21 +337,23 @@ public class MenuAppGUI extends JFrame {
                     add(new JButton(new ChooseToppingAction("coconut jelly")));
                 }
 
+                //Represents an option for selecting the toppings
                 private class ChooseToppingAction extends AbstractAction {
-                    private String toppingChoice;
+                    private final String toppingChoice;
 
                     public ChooseToppingAction(String t) {
                         super(t);
                         toppingChoice = t;
                     }
 
+                    //Effects: adds toppings to the list of toppings, cannot add more than two
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if (toppings.size() < 2) {
                             toppings.add(toppingChoice);
                         } else {
                             int removeToppingChoice = JOptionPane.showConfirmDialog(null,
-                                    "2 toppings already in drink, remove topping?");
+                                    "2 toppings already in drink, remove all toppings?");
                             if (removeToppingChoice == JOptionPane.YES_OPTION) {
                                 toppings.clear();
                             }
@@ -336,6 +362,7 @@ public class MenuAppGUI extends JFrame {
                 }
             }
 
+            //Represents a JPanel for choosing the ice of the drink
             private class IceTab extends JPanel {
                 IceTab() {
                     add(new JButton(new ChooseIceAction(0)));
@@ -343,14 +370,16 @@ public class MenuAppGUI extends JFrame {
                     add(new JButton(new ChooseIceAction(1)));
                 }
 
+                //Represents an action for choosing the ice
                 private class ChooseIceAction extends AbstractAction {
-                    private double iceOption;
+                    private final double iceOption;
 
                     public ChooseIceAction(double i) {
                         super(Double.toString(i));
                         iceOption = i;
                     }
 
+                    //Effects: sets ice as the chosen ice
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         ice = iceOption;
@@ -358,6 +387,7 @@ public class MenuAppGUI extends JFrame {
                 }
             }
 
+            //Represents a JPanel for choosing the sugar of the drink
             private class SugarTab extends JPanel {
                 SugarTab() {
                     add(new JButton(new ChooseSugarAction(0)));
@@ -368,14 +398,16 @@ public class MenuAppGUI extends JFrame {
                     add(new JButton(new ChooseSugarAction(1.25)));
                 }
 
+                //Represents an action for choosing the sugar of the drink
                 private class ChooseSugarAction extends AbstractAction {
-                    private double sugarChoice;
+                    private final double sugarChoice;
 
                     public ChooseSugarAction(double s) {
                         super(Double.toString(s));
                         sugarChoice = s;
                     }
 
+                    //Effects: sets sugar as the chosen sugar
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         sugar = sugarChoice;
@@ -383,12 +415,15 @@ public class MenuAppGUI extends JFrame {
                 }
             }
 
+            //Represents an action that orders the drink based on the current specifications and returns back to menu
             private class FinishDrinkAction extends AbstractAction {
 
                 FinishDrinkAction() {
                     super("Done");
                 }
 
+                //Effects: orders currentDrink with chosen specifications, switches back to MenuPanel
+                //Modifies: currentDrink, currentOrder
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     currentOrder.orderDrink(size, toppings, ice, sugar, currentDrink);
@@ -400,8 +435,10 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
+    //Represents a JPanel for a screen that displays previous orders
+    //includes tasks for choosing which order to display
     private class OrdersPanel extends JPanel {
-        private JTextArea orderDisplay;
+        private final JTextArea orderDisplay;
 
         OrdersPanel() {
             setLayout(new BorderLayout());
@@ -415,6 +452,8 @@ public class MenuAppGUI extends JFrame {
             this.add(orderDisplay);
         }
 
+        //Effects: adds buttons to buttonPanel for each order in orderLog
+        //Modifies: buttonPanel
         private void addOrderButtons(JPanel buttonPanel) {
             for (Order o : orderLog.getOrders()) {
                 JButton orderButton = new JButton(new DisplayOrderAction(o));
@@ -423,6 +462,7 @@ public class MenuAppGUI extends JFrame {
             }
         }
 
+        //Represents an action that displays the chosen order in orderDisplay
         private class DisplayOrderAction extends AbstractAction {
             Order displayedOrder;
 
@@ -431,6 +471,8 @@ public class MenuAppGUI extends JFrame {
                 displayedOrder = ord;
             }
 
+            //Effects: writes text to orderDisplay describing the chosen order
+            //Modifies: orderDisplay
             @Override
             public void actionPerformed(ActionEvent e) {
                 orderDisplay.setText("");
@@ -451,6 +493,8 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
+    //Represents a JPanel for the manager actions
+    //Includes tasks for viewing stats, adding drinks to the menu, starting a new order log, and setting new specials
     private class ManagerPanel extends JPanel {
         ManagerPanel() {
             add(new JButton(new AddDrinkToMenuAction()));
@@ -459,16 +503,20 @@ public class MenuAppGUI extends JFrame {
             add(new JButton(new StartNewOrderLogAction()));
         }
 
+        //Represents an action to add a new drink to the menu
         private class AddDrinkToMenuAction extends AbstractAction {
             AddDrinkToMenuAction() {
                 super("Add New Drink");
             }
 
+            //Effects: prompts user for info about the drink to be created, opens the menu and adds a new drink with
+            //the given specifications, saves the menu
+            //Modifies: menu.json
             @Override
             public void actionPerformed(ActionEvent e) {
                 String drinkName = JOptionPane.showInputDialog(null,
                         "Name of Drink", JOptionPane.QUESTION_MESSAGE).toLowerCase();
-                double price = Double.valueOf(JOptionPane.showInputDialog(null,
+                double price = Double.parseDouble(JOptionPane.showInputDialog(null,
                         "Price of Drink?", JOptionPane.QUESTION_MESSAGE));
                 openMenu();
                 ArrayList<Ingredient> ingredients;
@@ -486,6 +534,7 @@ public class MenuAppGUI extends JFrame {
                 JOptionPane.showMessageDialog(null, "Drink added to menu!");
             }
 
+            //Effects: prompts the user for ingredients to be added to the drink
             private void chooseIngredients(ArrayList<Ingredient> ingredients) {
                 boolean keepGoing = true;
                 while (keepGoing) {
@@ -495,7 +544,7 @@ public class MenuAppGUI extends JFrame {
                                 "Type of Ingredient?", JOptionPane.QUESTION_MESSAGE).toLowerCase();
                         String name = JOptionPane.showInputDialog(null,
                                 "Name of Ingredient?", JOptionPane.QUESTION_MESSAGE).toLowerCase();
-                        int amount = Integer.valueOf(JOptionPane.showInputDialog(null,
+                        int amount = Integer.parseInt(JOptionPane.showInputDialog(null,
                                 "Amount?", JOptionPane.QUESTION_MESSAGE));
                         Ingredient ingredient = new Ingredient(type, name, amount);
                         ingredients.add(ingredient);
@@ -506,11 +555,14 @@ public class MenuAppGUI extends JFrame {
             }
         }
 
+        //Represents an action to set new specials
         private class SetNewSpecialsAction extends AbstractAction {
             SetNewSpecialsAction() {
                 super("Set New Specials");
             }
 
+            //Effects: prompts the user for new specials, modifies the status of drinks in the menu accordingly
+            //Modifies: menu.json
             @Override
             public void actionPerformed(ActionEvent e) {
                 String special1 = JOptionPane.showInputDialog(null, "First Special?",
@@ -523,17 +575,19 @@ public class MenuAppGUI extends JFrame {
             }
         }
 
+        //Represents an action to view stats about the desired orderLog
         private class ViewStatsAction extends AbstractAction {
             ViewStatsAction() {
                 super("View Stats");
             }
 
+            //Effects: chooses whether to view the current orderLog or a previous one
             @Override
             public void actionPerformed(ActionEvent e) {
                 String[] options1 = {"current order log", "previous order log"};
                 int selectedChoice = JOptionPane.showOptionDialog(null,
                         "view current order log or previous order log", "STATS",
-                        0, 2, null, options1, options1[0]);
+                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options1, options1[0]);
                 if (selectedChoice == 0) {
                     viewStats(orderLog);
                 } else if (selectedChoice == 1) {
@@ -541,6 +595,7 @@ public class MenuAppGUI extends JFrame {
                 }
             }
 
+            //Represents a JPanel to view stats about previous orderLogs
             private class OrderLogPanel extends JPanel {
                 OrderLogPanel() {
                     openOrderLogList();
@@ -550,8 +605,9 @@ public class MenuAppGUI extends JFrame {
                 }
             }
 
+            //Represents an action to view stats about the selected orderLog
             private class SelectOrderLogAction extends AbstractAction {
-                private OrderLog selectedOrderLog;
+                private final OrderLog selectedOrderLog;
 
                 public SelectOrderLogAction(OrderLog o) {
                     super(o.getName());
@@ -564,11 +620,12 @@ public class MenuAppGUI extends JFrame {
                 }
             }
 
+            //Effects: prompts the user about which stat they want to view, provides them with the chosen info
             public void viewStats(OrderLog o) {
                 String[] options2 = {"price stats", "ingredient stats"};
                 int selectedChoice = JOptionPane.showOptionDialog(null,
                         "Which stat would you like to view?", "STATS",
-                        0, 2, null, options2, options2[0]);
+                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options2, options2[0]);
                 if (selectedChoice == 0) {
                     double priceTotal = o.getTotalPrice();
                     double priceAverage = priceTotal / o.getOrders().size();
@@ -580,10 +637,12 @@ public class MenuAppGUI extends JFrame {
                 }
             }
 
+            //Represents a JPanel with info about the ingredients in the chosen orderLog
             private class IngredientsPanel extends JPanel {
-                private ArrayList<Ingredient> ingredients;
+
 
                 public IngredientsPanel(OrderLog o) {
+                    ArrayList<Ingredient> ingredients;
                     ingredients = new ArrayList<>();
                     boolean ingredientHandled = false;
                     for (Order order : o.getOrders()) {
@@ -595,7 +654,7 @@ public class MenuAppGUI extends JFrame {
                                         ingredientHandled = true;
                                     }
                                 }
-                                if (ingredientHandled == false) {
+                                if (!ingredientHandled) {
                                     ingredients.add(new Ingredient(i.getType(), i.getName(), i.getAmount()));
                                 }
                                 ingredientHandled = false;
@@ -607,14 +666,16 @@ public class MenuAppGUI extends JFrame {
                     }
                 }
 
+                //Represents an action to view the stats about the chosen ingredient
                 private class ViewIngredientStatAction extends AbstractAction {
-                    private Ingredient selectedIngredient;
+                    private final Ingredient selectedIngredient;
 
                     public ViewIngredientStatAction(Ingredient i) {
                         super(i.getName());
                         selectedIngredient = i;
                     }
 
+                    //Effects: Shows the user info about the chosen ingredient
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         JOptionPane.showMessageDialog(null,
@@ -624,11 +685,15 @@ public class MenuAppGUI extends JFrame {
             }
         }
 
+        //Represents an action to start a new orderLog
         private class StartNewOrderLogAction extends AbstractAction {
             StartNewOrderLogAction() {
                 super("Start New Order Log");
             }
 
+            //Effects: prompts the user for the name of the new orderLog, adds orderLog to orderLogList
+            //creates a new orderLog with given name
+            //Modifies: orderLog
             @Override
             public void actionPerformed(ActionEvent e) {
                 openOrderLogList();
@@ -644,16 +709,19 @@ public class MenuAppGUI extends JFrame {
                 }
             }
 
+            //Effects: returns true if the given name has not already been used by a previous orderLog
             private boolean checkName(String name) {
-                Boolean nameNotAlreadyUsed = true;
+                boolean nameNotAlreadyUsed = true;
                 for (OrderLog o : orderLogList.getOrderLogList()) {
                     if (o.getName().equals(name)) {
                         nameNotAlreadyUsed = false;
+                        break;
                     }
                 }
                 return (nameNotAlreadyUsed && !orderLog.getName().equals(name));
             }
 
+            //Effects: writes orderLog to json
             private void saveOrderLog() {
                 orderLogList.addOrderLog(orderLog);
                 try {
@@ -672,11 +740,13 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
+    //Represents an action that switches to the HomePanel
     private class GoToHomeAction extends AbstractAction {
         GoToHomeAction() {
             super("home");
         }
 
+        //Effects: Switches to the home panel only if an order is not in progress
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!orderInProgress) {
@@ -688,11 +758,13 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
+    //Represents an action that switches to the MenuPanel
     private class GoToMenuAction extends AbstractAction {
         GoToMenuAction() {
             super("Menu");
         }
 
+        //Effects: switches to the MenuPanel only if an order is not in progress
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!orderInProgress) {
@@ -704,11 +776,13 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
+    //Represents an action that switches to the ManagerPanel
     private class GoToManagerAction extends AbstractAction {
         GoToManagerAction() {
             super("Manager Actions");
         }
 
+        //Effects: switches to the ManagerPanel only if an order is not in progress and the correct code is entered
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!orderInProgress) {
@@ -716,6 +790,7 @@ public class MenuAppGUI extends JFrame {
                         "passcode?",
                         "Enter code",
                         JOptionPane.QUESTION_MESSAGE);
+                String managerPasscode = "1234";
                 if (inputCode.equals(managerPasscode)) {
                     switchPanel(managerPanel);
                 } else {
@@ -730,11 +805,13 @@ public class MenuAppGUI extends JFrame {
         }
     }
 
+    //Represents an action that switches to the OrdersPanel
     private class GoToOrdersAction extends AbstractAction {
         GoToOrdersAction() {
             super("Orders");
         }
 
+        //Effects: switches to the OrdersPanel only if an order is not in progress
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!orderInProgress) {

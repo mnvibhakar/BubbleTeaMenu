@@ -16,6 +16,8 @@ public class OrderLogList {
         orderLogList = new ArrayList<>();
     }
 
+    //Effects: adds an orderlog to orderLogList
+    //Modifies: orderLogList
     public void addOrderLog(OrderLog orderLog) {
         orderLogList.add(orderLog);
     }

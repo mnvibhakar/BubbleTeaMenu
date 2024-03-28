@@ -531,6 +531,23 @@
                 "ice": 0,
                 "sugar": 0
             }]
+        },
+        {
+            "number": 0,
+            "drinks": [{
+                "special": true,
+                "size": 0,
+                "price": 4,
+                "name": "classic milk tea",
+                "ingredients": [{
+                    "amount": 550,
+                    "name": "classic",
+                    "type": "tea base"
+                }],
+                "toppings": [],
+                "ice": 0,
+                "sugar": 0
+            }]
         }
     ]
 }

@@ -50,6 +50,7 @@ public class OrderLog implements Writable {
         return name;
     }
 
+    //Effects: returns the total price of all orders in orders
     public double getTotalPrice() {
         double totalPrice = 0;
         for (Order o : orders) {
