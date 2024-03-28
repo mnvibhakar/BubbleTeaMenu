@@ -15,7 +15,6 @@ public class Order implements Writable {
     private static final double TAX_RATE = 0.08; //The sales tax rate applied to final orders
     private double totalPrice;                   // The total of price of all drinks in the order
     private ArrayList<Drink> drinksOrdered;      // A list of all drinks in the order
-    private Calendar timeStamp;
     private int orderNumber;
 
     // Effects: Creates new order
@@ -69,20 +68,12 @@ public class Order implements Writable {
         totalPrice = p;
     }
 
-    public Calendar getTimeStamp() {
-        return timeStamp;
-    }
-
     public int getOrderNumber() {
         return orderNumber;
     }
 
     public void setOrderNumber(int n) {
         orderNumber = n;
-    }
-
-    public void setTimeStamp(Calendar c) {
-        timeStamp = c;
     }
 
     //Effects: converts the order to a JSONObject and returns it
