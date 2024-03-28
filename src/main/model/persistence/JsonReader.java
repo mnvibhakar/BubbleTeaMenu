@@ -121,6 +121,7 @@ public class JsonReader {
         for (Drink d : drinks) {
             order.addDrink(d);
         }
+        order.setOrderNumber(nextOrder.getInt("number"));
         return order;
     }
 

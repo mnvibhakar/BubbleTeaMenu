@@ -1,7 +1,9 @@
 {"order logs": [
     {
         "name": "march 7",
-        "orders": [{"drinks": [{
+        "orders": [{
+          "number" : 1,
+          "drinks": [{
             "special": false,
             "size": 0,
             "price": 5,
@@ -19,24 +21,27 @@
     {
         "name": "test",
         "orders": [
-            {"drinks": [{
+            {
+              "number" : 1,
+              "drinks": [{
                 "special": true,
-                "size": 108,
-                "price": 5.7,
+                "size": 0,
+                "price": 5,
                 "name": "matcha latte",
                 "ingredients": [{
                     "amount": 450,
                     "name": "matcha",
                     "type": "tea base"
                 }],
-                "toppings": [{"name": "pearls"}],
-                "ice": 1,
-                "sugar": 1
+                "toppings": [],
+                "ice": 0,
+                "sugar": 0
             }]},
-            {"drinks": [{
+            {"number" : 1,
+              "drinks": [{
                 "special": false,
-                "size": 108,
-                "price": 5.5,
+                "size": 0,
+                "price": 5,
                 "name": "classic milk tea",
                 "ingredients": [{
                     "amount": 500,
@@ -44,9 +49,169 @@
                     "type": "tea base"
                 }],
                 "toppings": [],
-                "ice": 1,
-                "sugar": 1
+                "ice": 0,
+                "sugar": 0
             }]}
         ]
+    },
+    {
+        "name": "it's working!",
+        "orders": [{"number" : 1,
+          "drinks": [{
+            "special": false,
+            "size": 0,
+            "price": 7,
+            "name": "mango fruit tea",
+            "ingredients": [
+                {
+                    "amount": 450,
+                    "name": "green",
+                    "type": "tea base"
+                },
+                {
+                    "amount": 1,
+                    "name": "mango syrup",
+                    "type": "fruit syrup"
+                },
+                {
+                    "amount": 3,
+                    "name": "mango",
+                    "type": "fruit"
+                },
+                {
+                    "amount": 2,
+                    "name": "lemon",
+                    "type": "fruit"
+                },
+                {
+                    "amount": 3,
+                    "name": "lime",
+                    "type": "fruit"
+                }
+            ],
+            "toppings": [],
+            "ice": 0,
+            "sugar": 0
+        }]}]
+    },
+    {
+        "name": "it's working!",
+        "orders": [{"number" : 1,
+          "drinks": [{
+            "special": false,
+            "size": 0,
+            "price": 7,
+            "name": "mango fruit tea",
+            "ingredients": [
+                {
+                    "amount": 450,
+                    "name": "green",
+                    "type": "tea base"
+                },
+                {
+                    "amount": 1,
+                    "name": "mango syrup",
+                    "type": "fruit syrup"
+                },
+                {
+                    "amount": 3,
+                    "name": "mango",
+                    "type": "fruit"
+                },
+                {
+                    "amount": 2,
+                    "name": "lemon",
+                    "type": "fruit"
+                },
+                {
+                    "amount": 3,
+                    "name": "lime",
+                    "type": "fruit"
+                }
+            ],
+            "toppings": [],
+            "ice": 0,
+            "sugar": 0
+        }]}]
+    },
+    {
+        "name": "it's working!",
+        "orders": [{"number" : 1,
+          "drinks": [{
+            "special": false,
+            "size": 0,
+            "price": 7,
+            "name": "mango fruit tea",
+            "ingredients": [
+                {
+                    "amount": 450,
+                    "name": "green",
+                    "type": "tea base"
+                },
+                {
+                    "amount": 1,
+                    "name": "mango syrup",
+                    "type": "fruit syrup"
+                },
+                {
+                    "amount": 3,
+                    "name": "mango",
+                    "type": "fruit"
+                },
+                {
+                    "amount": 2,
+                    "name": "lemon",
+                    "type": "fruit"
+                },
+                {
+                    "amount": 3,
+                    "name": "lime",
+                    "type": "fruit"
+                }
+            ],
+            "toppings": [],
+            "ice": 0,
+            "sugar": 0
+        }]}]
+    },
+    {
+        "name": "it's working!",
+        "orders": [{"number" : 1,
+          "drinks": [{
+            "special": false,
+            "size": 0,
+            "price": 7,
+            "name": "mango fruit tea",
+            "ingredients": [
+                {
+                    "amount": 450,
+                    "name": "green",
+                    "type": "tea base"
+                },
+                {
+                    "amount": 1,
+                    "name": "mango syrup",
+                    "type": "fruit syrup"
+                },
+                {
+                    "amount": 3,
+                    "name": "mango",
+                    "type": "fruit"
+                },
+                {
+                    "amount": 2,
+                    "name": "lemon",
+                    "type": "fruit"
+                },
+                {
+                    "amount": 3,
+                    "name": "lime",
+                    "type": "fruit"
+                }
+            ],
+            "toppings": [],
+            "ice": 0,
+            "sugar": 0
+        }]}]
     }
 ]}
