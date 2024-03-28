@@ -23,6 +23,7 @@ public class OrderTest {
     @BeforeEach
     void setup() {
         order = new Order();
+        order.setOrderNumber(1);
         noToppings = new ArrayList<>();
         toppings = new ArrayList<>();
         toppings.add("");
@@ -38,6 +39,7 @@ public class OrderTest {
         order.addDrink(drink1);
         assertEquals(5.0, order.getTotalPrice());
         assertEquals(1, order.getDrinksOrdered().size());
+        assertEquals(1, order.getOrderNumber());
     }
 
     @Test

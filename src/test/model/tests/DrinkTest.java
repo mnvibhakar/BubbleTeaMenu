@@ -41,6 +41,8 @@ public class DrinkTest {
         assertEquals('s', drink.getSize());
         assertEquals(5.0, drink.getPrice());
         assertEquals(0, drink.getToppings().size());
+        assertEquals(1, drink.getIce());
+        assertEquals(1, drink.getSugar());
     }
 
     @Test
