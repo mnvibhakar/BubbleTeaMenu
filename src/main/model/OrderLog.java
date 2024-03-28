@@ -46,7 +46,15 @@ public class OrderLog implements Writable {
         return orders;
     }
 
-    public Object getName() {
+    public String getName() {
         return name;
+    }
+
+    public double getTotalPrice() {
+        double totalPrice = 0;
+        for (Order o : orders) {
+            totalPrice += o.getTotalPrice();
+        }
+        return totalPrice;
     }
 }

@@ -39,7 +39,6 @@ public class Order implements Writable {
         drink.updateDrink(size, exTop, ice, sugar);
         drink.updateIngredients();
         addDrink(drink);
-        timeStamp = Calendar.getInstance();
     }
 
 
@@ -70,11 +69,28 @@ public class Order implements Writable {
         totalPrice = p;
     }
 
+    public Calendar getTimeStamp() {
+        return timeStamp;
+    }
+
+    public int getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(int n) {
+        orderNumber = n;
+    }
+
+    public void setTimeStamp(Calendar c) {
+        timeStamp = c;
+    }
+
     //Effects: converts the order to a JSONObject and returns it
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("drinks", drinksToJson());
+        json.put("number", orderNumber);
         return json;
     }
 
