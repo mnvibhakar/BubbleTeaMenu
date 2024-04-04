@@ -1,6 +1,6 @@
 {"drinks": [
     {
-        "special": true,
+        "special": false,
         "size": 0,
         "price": 5,
         "name": "classic milk tea",
@@ -28,7 +28,7 @@
         "sugar": 0
     },
     {
-        "special": false,
+        "special": true,
         "size": 0,
         "price": 6,
         "name": "mango fruit tea",
@@ -78,7 +78,7 @@
         "sugar": 0
     },
     {
-        "special": true,
+        "special": false,
         "size": 0,
         "price": 6,
         "name": "classic yogurt tea",
@@ -94,6 +94,20 @@
                 "type": "yogurt"
             }
         ],
+        "toppings": [],
+        "ice": 0,
+        "sugar": 0
+    },
+    {
+        "special": false,
+        "size": 0,
+        "price": 5,
+        "name": "taro milk tea",
+        "ingredients": [{
+            "amount": 350,
+            "name": "taro milk tea",
+            "type": "tea base"
+        }],
         "toppings": [],
         "ice": 0,
         "sugar": 0

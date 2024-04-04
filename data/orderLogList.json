@@ -2,216 +2,798 @@
     {
         "name": "march 7",
         "orders": [{
-          "number" : 1,
-          "drinks": [{
-            "special": false,
-            "size": 0,
-            "price": 5,
-            "name": "classic milk tea",
-            "ingredients": [{
-                "amount": 400,
-                "name": "classic",
-                "type": "tea base"
-            }],
-            "toppings": [],
-            "ice": 0,
-            "sugar": 0
-        }]}]
-    },
-    {
-        "name": "test",
-        "orders": [
-            {
-              "number" : 1,
-              "drinks": [{
-                "special": true,
-                "size": 0,
-                "price": 5,
-                "name": "matcha latte",
-                "ingredients": [{
-                    "amount": 450,
-                    "name": "matcha",
-                    "type": "tea base"
-                }],
-                "toppings": [],
-                "ice": 0,
-                "sugar": 0
-            }]},
-            {"number" : 1,
-              "drinks": [{
+            "number": 1,
+            "drinks": [{
                 "special": false,
                 "size": 0,
                 "price": 5,
                 "name": "classic milk tea",
                 "ingredients": [{
-                    "amount": 500,
+                    "amount": 400,
                     "name": "classic",
                     "type": "tea base"
                 }],
                 "toppings": [],
                 "ice": 0,
                 "sugar": 0
-            }]}
+            }]
+        }]
+    },
+    {
+        "name": "test",
+        "orders": [
+            {
+                "number": 1,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 5,
+                    "name": "matcha latte",
+                    "ingredients": [{
+                        "amount": 450,
+                        "name": "matcha",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 1,
+                "drinks": [{
+                    "special": false,
+                    "size": 0,
+                    "price": 5,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 500,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            }
         ]
     },
     {
         "name": "it's working!",
-        "orders": [{"number" : 1,
-          "drinks": [{
-            "special": false,
-            "size": 0,
-            "price": 7,
-            "name": "mango fruit tea",
-            "ingredients": [
-                {
-                    "amount": 450,
-                    "name": "green",
-                    "type": "tea base"
-                },
-                {
-                    "amount": 1,
-                    "name": "mango syrup",
-                    "type": "fruit syrup"
-                },
-                {
-                    "amount": 3,
-                    "name": "mango",
-                    "type": "fruit"
-                },
-                {
-                    "amount": 2,
-                    "name": "lemon",
-                    "type": "fruit"
-                },
-                {
-                    "amount": 3,
-                    "name": "lime",
-                    "type": "fruit"
-                }
-            ],
-            "toppings": [],
-            "ice": 0,
-            "sugar": 0
-        }]}]
+        "orders": [{
+            "number": 1,
+            "drinks": [{
+                "special": false,
+                "size": 0,
+                "price": 7,
+                "name": "mango fruit tea",
+                "ingredients": [
+                    {
+                        "amount": 450,
+                        "name": "green",
+                        "type": "tea base"
+                    },
+                    {
+                        "amount": 1,
+                        "name": "mango syrup",
+                        "type": "fruit syrup"
+                    },
+                    {
+                        "amount": 3,
+                        "name": "mango",
+                        "type": "fruit"
+                    },
+                    {
+                        "amount": 2,
+                        "name": "lemon",
+                        "type": "fruit"
+                    },
+                    {
+                        "amount": 3,
+                        "name": "lime",
+                        "type": "fruit"
+                    }
+                ],
+                "toppings": [],
+                "ice": 0,
+                "sugar": 0
+            }]
+        }]
     },
     {
         "name": "it's working!",
-        "orders": [{"number" : 1,
-          "drinks": [{
-            "special": false,
-            "size": 0,
-            "price": 7,
-            "name": "mango fruit tea",
-            "ingredients": [
-                {
-                    "amount": 450,
-                    "name": "green",
-                    "type": "tea base"
-                },
-                {
-                    "amount": 1,
-                    "name": "mango syrup",
-                    "type": "fruit syrup"
-                },
-                {
-                    "amount": 3,
-                    "name": "mango",
-                    "type": "fruit"
-                },
-                {
-                    "amount": 2,
-                    "name": "lemon",
-                    "type": "fruit"
-                },
-                {
-                    "amount": 3,
-                    "name": "lime",
-                    "type": "fruit"
-                }
-            ],
-            "toppings": [],
-            "ice": 0,
-            "sugar": 0
-        }]}]
+        "orders": [{
+            "number": 1,
+            "drinks": [{
+                "special": false,
+                "size": 0,
+                "price": 7,
+                "name": "mango fruit tea",
+                "ingredients": [
+                    {
+                        "amount": 450,
+                        "name": "green",
+                        "type": "tea base"
+                    },
+                    {
+                        "amount": 1,
+                        "name": "mango syrup",
+                        "type": "fruit syrup"
+                    },
+                    {
+                        "amount": 3,
+                        "name": "mango",
+                        "type": "fruit"
+                    },
+                    {
+                        "amount": 2,
+                        "name": "lemon",
+                        "type": "fruit"
+                    },
+                    {
+                        "amount": 3,
+                        "name": "lime",
+                        "type": "fruit"
+                    }
+                ],
+                "toppings": [],
+                "ice": 0,
+                "sugar": 0
+            }]
+        }]
     },
     {
         "name": "it's working!",
-        "orders": [{"number" : 1,
-          "drinks": [{
-            "special": false,
-            "size": 0,
-            "price": 7,
-            "name": "mango fruit tea",
-            "ingredients": [
-                {
-                    "amount": 450,
-                    "name": "green",
-                    "type": "tea base"
-                },
-                {
-                    "amount": 1,
-                    "name": "mango syrup",
-                    "type": "fruit syrup"
-                },
-                {
-                    "amount": 3,
-                    "name": "mango",
-                    "type": "fruit"
-                },
-                {
-                    "amount": 2,
-                    "name": "lemon",
-                    "type": "fruit"
-                },
-                {
-                    "amount": 3,
-                    "name": "lime",
-                    "type": "fruit"
-                }
-            ],
-            "toppings": [],
-            "ice": 0,
-            "sugar": 0
-        }]}]
+        "orders": [{
+            "number": 1,
+            "drinks": [{
+                "special": false,
+                "size": 0,
+                "price": 7,
+                "name": "mango fruit tea",
+                "ingredients": [
+                    {
+                        "amount": 450,
+                        "name": "green",
+                        "type": "tea base"
+                    },
+                    {
+                        "amount": 1,
+                        "name": "mango syrup",
+                        "type": "fruit syrup"
+                    },
+                    {
+                        "amount": 3,
+                        "name": "mango",
+                        "type": "fruit"
+                    },
+                    {
+                        "amount": 2,
+                        "name": "lemon",
+                        "type": "fruit"
+                    },
+                    {
+                        "amount": 3,
+                        "name": "lime",
+                        "type": "fruit"
+                    }
+                ],
+                "toppings": [],
+                "ice": 0,
+                "sugar": 0
+            }]
+        }]
     },
     {
         "name": "it's working!",
-        "orders": [{"number" : 1,
-          "drinks": [{
-            "special": false,
-            "size": 0,
-            "price": 7,
-            "name": "mango fruit tea",
-            "ingredients": [
-                {
-                    "amount": 450,
-                    "name": "green",
-                    "type": "tea base"
-                },
-                {
-                    "amount": 1,
-                    "name": "mango syrup",
-                    "type": "fruit syrup"
-                },
-                {
-                    "amount": 3,
-                    "name": "mango",
-                    "type": "fruit"
-                },
-                {
-                    "amount": 2,
-                    "name": "lemon",
-                    "type": "fruit"
-                },
-                {
-                    "amount": 3,
-                    "name": "lime",
-                    "type": "fruit"
-                }
-            ],
-            "toppings": [],
-            "ice": 0,
-            "sugar": 0
-        }]}]
+        "orders": [{
+            "number": 1,
+            "drinks": [{
+                "special": false,
+                "size": 0,
+                "price": 7,
+                "name": "mango fruit tea",
+                "ingredients": [
+                    {
+                        "amount": 450,
+                        "name": "green",
+                        "type": "tea base"
+                    },
+                    {
+                        "amount": 1,
+                        "name": "mango syrup",
+                        "type": "fruit syrup"
+                    },
+                    {
+                        "amount": 3,
+                        "name": "mango",
+                        "type": "fruit"
+                    },
+                    {
+                        "amount": 2,
+                        "name": "lemon",
+                        "type": "fruit"
+                    },
+                    {
+                        "amount": 3,
+                        "name": "lime",
+                        "type": "fruit"
+                    }
+                ],
+                "toppings": [],
+                "ice": 0,
+                "sugar": 0
+            }]
+        }]
+    },
+    {
+        "name": "test name",
+        "orders": [
+            {
+                "number": 1,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 350,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 2,
+                "drinks": [
+                    {
+                        "special": false,
+                        "size": 0,
+                        "price": 6,
+                        "name": "mango fruit tea",
+                        "ingredients": [
+                            {
+                                "amount": 350,
+                                "name": "green",
+                                "type": "tea base"
+                            },
+                            {
+                                "amount": 1,
+                                "name": "mango syrup",
+                                "type": "fruit syrup"
+                            },
+                            {
+                                "amount": 2,
+                                "name": "mango",
+                                "type": "fruit"
+                            },
+                            {
+                                "amount": 1,
+                                "name": "lemon",
+                                "type": "fruit"
+                            },
+                            {
+                                "amount": 2,
+                                "name": "lime",
+                                "type": "fruit"
+                            }
+                        ],
+                        "toppings": [],
+                        "ice": 0,
+                        "sugar": 0
+                    },
+                    {
+                        "special": false,
+                        "size": 0,
+                        "price": 5,
+                        "name": "strawberry milk tea",
+                        "ingredients": [{
+                            "amount": 450,
+                            "name": "strawberry milk tea",
+                            "type": "tea base"
+                        }],
+                        "toppings": [],
+                        "ice": 0,
+                        "sugar": 0
+                    }
+                ]
+            },
+            {
+                "number": 3,
+                "drinks": [{
+                    "special": false,
+                    "size": 0,
+                    "price": 6,
+                    "name": "matcha latte",
+                    "ingredients": [{
+                        "amount": 550,
+                        "name": "matcha",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 4,
+                "drinks": [{
+                    "special": false,
+                    "size": 0,
+                    "price": 6,
+                    "name": "matcha latte",
+                    "ingredients": [{
+                        "amount": 500,
+                        "name": "matcha",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 5,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 5,
+                    "name": "classic yogurt tea",
+                    "ingredients": [
+                        {
+                            "amount": 300,
+                            "name": "green",
+                            "type": "tea base"
+                        },
+                        {
+                            "amount": 60,
+                            "name": "milk",
+                            "type": "yogurt"
+                        }
+                    ],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 6,
+                "drinks": [{
+                    "special": false,
+                    "size": 0,
+                    "price": 6,
+                    "name": "mango fruit tea",
+                    "ingredients": [
+                        {
+                            "amount": 400,
+                            "name": "green",
+                            "type": "tea base"
+                        },
+                        {
+                            "amount": 1,
+                            "name": "mango syrup",
+                            "type": "fruit syrup"
+                        },
+                        {
+                            "amount": 2,
+                            "name": "mango",
+                            "type": "fruit"
+                        },
+                        {
+                            "amount": 1,
+                            "name": "lemon",
+                            "type": "fruit"
+                        },
+                        {
+                            "amount": 2,
+                            "name": "lime",
+                            "type": "fruit"
+                        }
+                    ],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 7,
+                "drinks": [
+                    {
+                        "special": false,
+                        "size": 0,
+                        "price": 6,
+                        "name": "strawberry milk tea",
+                        "ingredients": [{
+                            "amount": 450,
+                            "name": "strawberry milk tea",
+                            "type": "tea base"
+                        }],
+                        "toppings": [],
+                        "ice": 0,
+                        "sugar": 0
+                    },
+                    {
+                        "special": true,
+                        "size": 0,
+                        "price": 4,
+                        "name": "classic milk tea",
+                        "ingredients": [{
+                            "amount": 450,
+                            "name": "classic",
+                            "type": "tea base"
+                        }],
+                        "toppings": [],
+                        "ice": 0,
+                        "sugar": 0
+                    },
+                    {
+                        "special": false,
+                        "size": 0,
+                        "price": 6,
+                        "name": "strawberry milk tea",
+                        "ingredients": [{
+                            "amount": 550,
+                            "name": "strawberry milk tea",
+                            "type": "tea base"
+                        }],
+                        "toppings": [],
+                        "ice": 0,
+                        "sugar": 0
+                    }
+                ]
+            },
+            {
+                "number": 8,
+                "drinks": [{
+                    "special": false,
+                    "size": 0,
+                    "price": 6,
+                    "name": "mango fruit tea",
+                    "ingredients": [
+                        {
+                            "amount": 400,
+                            "name": "green",
+                            "type": "tea base"
+                        },
+                        {
+                            "amount": 1,
+                            "name": "mango syrup",
+                            "type": "fruit syrup"
+                        },
+                        {
+                            "amount": 2,
+                            "name": "mango",
+                            "type": "fruit"
+                        },
+                        {
+                            "amount": 1,
+                            "name": "lemon",
+                            "type": "fruit"
+                        },
+                        {
+                            "amount": 2,
+                            "name": "lime",
+                            "type": "fruit"
+                        }
+                    ],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 9,
+                "drinks": [{
+                    "special": false,
+                    "size": 0,
+                    "price": 6,
+                    "name": "mango fruit tea",
+                    "ingredients": [
+                        {
+                            "amount": 350,
+                            "name": "green",
+                            "type": "tea base"
+                        },
+                        {
+                            "amount": 1,
+                            "name": "mango syrup",
+                            "type": "fruit syrup"
+                        },
+                        {
+                            "amount": 2,
+                            "name": "mango",
+                            "type": "fruit"
+                        },
+                        {
+                            "amount": 1,
+                            "name": "lemon",
+                            "type": "fruit"
+                        },
+                        {
+                            "amount": 2,
+                            "name": "lime",
+                            "type": "fruit"
+                        }
+                    ],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 10,
+                "drinks": [{
+                    "special": false,
+                    "size": 0,
+                    "price": 6,
+                    "name": "matcha latte",
+                    "ingredients": [{
+                        "amount": 450,
+                        "name": "matcha",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 11,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 500,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 12,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 450,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 13,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 450,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 14,
+                "drinks": [{
+                    "special": false,
+                    "size": 0,
+                    "price": 6,
+                    "name": "matcha latte",
+                    "ingredients": [{
+                        "amount": 450,
+                        "name": "matcha",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 15,
+                "drinks": [
+                    {
+                        "special": true,
+                        "size": 0,
+                        "price": 4,
+                        "name": "classic milk tea",
+                        "ingredients": [{
+                            "amount": 500,
+                            "name": "classic",
+                            "type": "tea base"
+                        }],
+                        "toppings": [],
+                        "ice": 0,
+                        "sugar": 0
+                    },
+                    {
+                        "special": true,
+                        "size": 0,
+                        "price": 4,
+                        "name": "classic milk tea",
+                        "ingredients": [{
+                            "amount": 400,
+                            "name": "classic",
+                            "type": "tea base"
+                        }],
+                        "toppings": [],
+                        "ice": 0,
+                        "sugar": 0
+                    }
+                ]
+            },
+            {
+                "number": 16,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 500,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 17,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 500,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 18,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 500,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 19,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 450,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 20,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 450,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 21,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 450,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 22,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 450,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 0,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 4,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 550,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 1,
+                "drinks": [{
+                    "special": true,
+                    "size": 115,
+                    "price": 4.5,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 400,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [{"name": "grass jelly"}],
+                    "ice": 0.5,
+                    "sugar": 0
+                }]
+            }
+        ]
     }
 ]}
