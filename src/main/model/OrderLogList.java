@@ -16,10 +16,12 @@ public class OrderLogList {
         orderLogList = new ArrayList<>();
     }
 
-    //Effects: adds an orderlog to orderLogList
+    //Effects: adds an orderLog to orderLogList
     //Modifies: orderLogList
     public void addOrderLog(OrderLog orderLog) {
         orderLogList.add(orderLog);
+        Event event = new Event("orderLog added to orderLogList, name: " + orderLog.getName());
+        EventLog.getInstance().logEvent(event);
     }
 
     public ArrayList<OrderLog> getOrderLogList() {

@@ -2,6 +2,7 @@ package ui;
 
 import model.*;
 
+import model.Event;
 import model.Menu;
 import model.exceptions.DuplicateNameException;
 import model.persistence.JsonWriter;
@@ -113,6 +114,9 @@ public class MenuAppGUI extends JFrame {
                 JOptionPane.showMessageDialog(null,
                         "Could not write to file " + ORDERLOG_JSON_STORE, "ORDERLOG",
                         JOptionPane.ERROR_MESSAGE);
+            }
+            for (Event next : EventLog.getInstance()) {
+                System.out.println(next.toString());
             }
             System.exit(0);
         }

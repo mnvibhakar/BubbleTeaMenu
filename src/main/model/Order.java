@@ -38,6 +38,8 @@ public class Order implements Writable {
         drink.updateDrink(size, exTop, ice, sugar);
         drink.updateIngredients();
         addDrink(drink);
+        Event event = new Event("Added drink to order, name: " + drink.getName());
+        EventLog.getInstance().logEvent(event);
     }
 
 

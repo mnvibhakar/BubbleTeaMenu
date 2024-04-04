@@ -22,6 +22,10 @@ public class OrderLog implements Writable {
     //Effects: adds an order to the order log
     public void addOrder(Order o) {
         orders.add(o);
+        Event event = new Event("Order added to orderLog, total price: "
+                + Double.toString(o.getTotalPrice())
+                + ", Drinks: " + Integer.toString(o.getDrinksOrdered().size()));
+        EventLog.getInstance().logEvent(event);
     }
 
     //Effects: converts the orderLog to a JSONObject and returns it

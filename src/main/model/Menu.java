@@ -30,6 +30,12 @@ public class Menu implements Writable {
             }
         }
         drinks.add(d);
+        Event event = new Event("Drink added to menu: " + d.getName());
+        EventLog.getInstance().logEvent(event);
+    }
+
+    public void addDrinkFromFile(Drink drink) {
+        drinks.add(drink);
     }
 
     // Effects: returns the drink on the menu with the given name,
@@ -53,6 +59,8 @@ public class Menu implements Writable {
                 drink.setSpecial(false);
             }
         }
+        Event event = new Event("set specials: " + s1 + " , " + s2);
+        EventLog.getInstance().logEvent(event);
     }
 
     public ArrayList<Drink> getDrinks() {
@@ -75,4 +83,6 @@ public class Menu implements Writable {
         }
         return jsonArray;
     }
+
+
 }
