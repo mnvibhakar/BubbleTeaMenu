@@ -210,7 +210,7 @@ public class MenuAppGUI extends JFrame {
             displayPanel.setPreferredSize(new Dimension(235, HEIGHT));
             displayPanel.setFont(new Font("serif", Font.PLAIN, 18));
             openMenu();
-            drinkPanel.setLayout(new GridLayout(menu.getDrinks().size() / 4, menu.getDrinks().size() / 4));
+            drinkPanel.setLayout(new GridLayout(6, 4));
             for (Drink d : menu.getDrinks()) {
                 drinkPanel.add(new JButton(new OrderDrinkAction(d)));
             }
@@ -265,6 +265,7 @@ public class MenuAppGUI extends JFrame {
                 orderLog.addOrder(currentOrder);
                 currentOrder = new Order();
                 currentNumber++;
+                switchPanel(new MenuPanel());
             }
         }
 
