@@ -28,3 +28,37 @@ Being able to gather and view data would help us be more efficient and improve t
 - As a manager, I want to be able to add the current order log to a list of all previous order logs, save that list, and start a new order log
 - As a manager, I want to be able to open a list of all previous order logs and view stats about an order log of my choice
 - As a manger, I want to be able to save changes to the menu, including the current specials and adding drinks from the menu
+
+### Phase 4: task 2
+Thu Apr 04 14:26:33 PDT 2024
+
+Added drink to order, name: classic milk tea
+
+Thu Apr 04 14:26:39 PDT 2024
+
+Added drink to order, name: matcha latte
+
+Thu Apr 04 14:26:41 PDT 2024
+
+Order added to orderLog, total price: 11.5, Drinks: 2
+
+Thu Apr 04 14:27:34 PDT 2024
+
+Drink added to menu: thai milk tea
+
+Thu Apr 04 14:27:42 PDT 2024
+
+set specials: thai milk tea , taro milk tea
+
+Thu Apr 04 14:28:00 PDT 2024
+
+orderLog added to orderLogList, name: april 4th
+
+### Phase 4: task 3
+The main thing I could improve on with my design is revamping my gui file to make it cleaner and simpler. Currently, it
+is just over 800 lines long, and most of that is wrapped up in internal classes that could probably be made into their
+own classes in separate files. This would be an easy way to improve the readability of my program. Another thing I think
+could be improved is the ingredient class, and specifically the way that drinks change the amount of ingredients in
+themselves based on size/ice. I think instead of using a variable for the ingredient type and updating based on the type,
+I could have more variables to represent the different ingredient amounts. This would help to future-proof the program
+and reduce complexity later, so it would be a helpful change.
