@@ -781,18 +781,129 @@
                 "number": 1,
                 "drinks": [{
                     "special": true,
-                    "size": 115,
-                    "price": 4.5,
+                    "size": 0,
+                    "price": 4,
                     "name": "classic milk tea",
                     "ingredients": [{
                         "amount": 400,
                         "name": "classic",
                         "type": "tea base"
                     }],
-                    "toppings": [{"name": "grass jelly"}],
-                    "ice": 0.5,
+                    "toppings": [],
+                    "ice": 0,
                     "sugar": 0
                 }]
+            }
+        ]
+    },
+    {
+        "name": "april 4th",
+        "orders": [
+            {
+                "number": 1,
+                "drinks": [{
+                    "special": true,
+                    "size": 0,
+                    "price": 5,
+                    "name": "mango fruit tea",
+                    "ingredients": [
+                        {
+                            "amount": 300,
+                            "name": "green",
+                            "type": "tea base"
+                        },
+                        {
+                            "amount": 1,
+                            "name": "mango syrup",
+                            "type": "fruit syrup"
+                        },
+                        {
+                            "amount": 2,
+                            "name": "mango",
+                            "type": "fruit"
+                        },
+                        {
+                            "amount": 1,
+                            "name": "lemon",
+                            "type": "fruit"
+                        },
+                        {
+                            "amount": 2,
+                            "name": "lime",
+                            "type": "fruit"
+                        }
+                    ],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 2,
+                "drinks": [{
+                    "special": false,
+                    "size": 0,
+                    "price": 6,
+                    "name": "matcha latte",
+                    "ingredients": [{
+                        "amount": 450,
+                        "name": "matcha",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 3,
+                "drinks": [{
+                    "special": false,
+                    "size": 0,
+                    "price": 5,
+                    "name": "classic milk tea",
+                    "ingredients": [{
+                        "amount": 450,
+                        "name": "classic",
+                        "type": "tea base"
+                    }],
+                    "toppings": [],
+                    "ice": 0,
+                    "sugar": 0
+                }]
+            },
+            {
+                "number": 4,
+                "drinks": [
+                    {
+                        "special": false,
+                        "size": 115,
+                        "price": 5,
+                        "name": "classic milk tea",
+                        "ingredients": [{
+                            "amount": 500,
+                            "name": "classic",
+                            "type": "tea base"
+                        }],
+                        "toppings": [],
+                        "ice": 0,
+                        "sugar": 0
+                    },
+                    {
+                        "special": false,
+                        "size": 115,
+                        "price": 6.5,
+                        "name": "matcha latte",
+                        "ingredients": [{
+                            "amount": 450,
+                            "name": "matcha",
+                            "type": "tea base"
+                        }],
+                        "toppings": [{"name": "pearls"}],
+                        "ice": 0,
+                        "sugar": 0.5
+                    }
+                ]
             }
         ]
     }

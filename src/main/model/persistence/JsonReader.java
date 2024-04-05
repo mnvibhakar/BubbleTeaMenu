@@ -69,7 +69,7 @@ public class JsonReader {
         for (Object json : jsonArray) {
             JSONObject nextOrderLog = (JSONObject) json;
             OrderLog orderLog = parseOrderLog(nextOrderLog);
-            orderLogList.addOrderLog(orderLog);
+            orderLogList.addOrderLogFromFile(orderLog);
         }
     }
 
@@ -87,11 +87,8 @@ public class JsonReader {
         for (Object json : jsonArray) {
             JSONObject nextDrink = (JSONObject) json;
             Drink drink = getDrink(nextDrink);
-            try {
-                menu.addDrink(drink);
-            } catch (DuplicateNameException e) {
-                throw new Error("incorrect name duplication occurrence");
-            }
+            menu.addDrinkFromFile(drink);
+
         }
     }
 
@@ -110,7 +107,7 @@ public class JsonReader {
         for (Object json : jsonArray) {
             JSONObject nextOrder = (JSONObject) json;
             Order order = getOrder(nextOrder);
-            orderLog.addOrder(order);
+            orderLog.addOrderFile(order);
         }
     }
 

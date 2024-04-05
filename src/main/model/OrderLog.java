@@ -28,6 +28,10 @@ public class OrderLog implements Writable {
         EventLog.getInstance().logEvent(event);
     }
 
+    public void addOrderFile(Order order) {
+        orders.add(order);
+    }
+
     //Effects: converts the orderLog to a JSONObject and returns it
     @Override
     public JSONObject toJson() {

@@ -28,7 +28,7 @@
         "sugar": 0
     },
     {
-        "special": true,
+        "special": false,
         "size": 0,
         "price": 6,
         "name": "mango fruit tea",
@@ -99,7 +99,7 @@
         "sugar": 0
     },
     {
-        "special": false,
+        "special": true,
         "size": 0,
         "price": 5,
         "name": "taro milk tea",
@@ -108,6 +108,27 @@
             "name": "taro milk tea",
             "type": "tea base"
         }],
+        "toppings": [],
+        "ice": 0,
+        "sugar": 0
+    },
+    {
+        "special": true,
+        "size": 0,
+        "price": 6,
+        "name": "thai milk tea",
+        "ingredients": [
+            {
+                "amount": 300,
+                "name": "thai tea",
+                "type": "tea base"
+            },
+            {
+                "amount": 60,
+                "name": "specialty milk",
+                "type": "milk"
+            }
+        ],
         "toppings": [],
         "ice": 0,
         "sugar": 0

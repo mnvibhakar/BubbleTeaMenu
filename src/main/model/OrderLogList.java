@@ -1,5 +1,6 @@
 package model;
 
+import model.persistence.Writable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 /*
 represents a list of all orderLogs
  */
-public class OrderLogList {
+public class OrderLogList implements Writable {
 
     private ArrayList<OrderLog> orderLogList;
 
@@ -22,6 +23,10 @@ public class OrderLogList {
         orderLogList.add(orderLog);
         Event event = new Event("orderLog added to orderLogList, name: " + orderLog.getName());
         EventLog.getInstance().logEvent(event);
+    }
+
+    public void addOrderLogFromFile(OrderLog orderLog) {
+        orderLogList.add(orderLog);
     }
 
     public ArrayList<OrderLog> getOrderLogList() {
@@ -38,6 +43,7 @@ public class OrderLogList {
         return null;
     }
 
+    @Override
     //Effects: converts the OrderLogList to a JSONObject and returns it
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
